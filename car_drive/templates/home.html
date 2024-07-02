@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <title>Home</title>
+   </head>
+  
+  <header>
+   <h3>5eDRIVE</h3>
+  </header>
+
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
+        <img src = "C:\Users\d3012\Desktop\portfolio\img\shinryoku.png" alt = "ホーム">
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      </nav>
+      {% block content %}{% endblock %}
+
+    <p>あと{{ target_achievement_count }}回目標達成でレベルアップ</p>
+    <p>現在のドライバーレベル:{{ users.driver_level }}</p>
+    <p>目標燃費量{{ car.target_fuel_efficiency }}</p>
+    <p>●年●月●日実績燃費量{{ record.fuel_efficiency }}</p>
+  <nav>
+    <a class="navbar-brand" href="{% url 'Edrive:records' %}">燃費入力</a>
+    <a class="navbar-brand" href="{% url 'Edrive:target_fuelefficiency' %}">目標燃費量入力</a>
+  </nav>
+   </body>
+</html>

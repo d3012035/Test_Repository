@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <title>目標燃費量</title>
+   </head>
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+
+      </nav>
+      {% block content %}{% endblock %}
+   
+   <h4>{{ car_model_name }}の平均燃費量{{ average_fuel_efficiency }}</h4>
+<label for="target_fuel_efficiency">目標燃費量</label>
+<input type="text" id="target_fuel_efficiency" name="target_fuel_efficiency" value="{{ average_fuel_efficiency }} km/L">
+   <nav>
+        <form method="POST">
+           {% csrf_token %}
+           {{ form.as_p }}km/L
+   
+   <input type="submit" value="更新">
+        </form>
+        {% if user.is_authenticated %}
+        {% else %}
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
+        {% endif %}
+   </nav>
+   </body>
+</html>

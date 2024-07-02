@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   </head>
+
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      </nav>
+      {% block content %}{% endblock %}
+
+    <h3>マイページ</h3>
+    <h4>名前</h4>
+    <h4>運転免許証</h4>
+    <h4>オイル交換</h4>
+    <h4>車検</h4>
+    <a class="navbar-brand" href="{% url 'Edrive:login' %}">編集</a>
+    <h4>現在のドライバーレベル</h4>
+    </body>
+</html>

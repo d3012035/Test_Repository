@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <title>FuelRecords</title> 
+  </head>
+
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      </nav>
+       {% block content %}{% endblock %}
+
+    <p>●年●月●日</p>
+
+  <nav>
+   <form method="POST">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <input type="submit" value="保存">
+        </form>
+
+        {% if date %}
+            <h2>Formatted DateTime: {{ created_at }}</h2>
+        {% endif %}
+    <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
+  </nav>
+<div class="container">
+        <div class="car-info">
+            <table border='1'>
+      <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>日付</th>
+                <th>走行距離</th>
+                <th>給油量</th>
+                <th>燃費量</th>
+                <th>Actions</th>
+            </tr>
+               
+        </thead>
+            <tbody>
+            {% for records in fuel_records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.created_at }}</td>
+                    <td>{{ record.distance }}km</td>
+                    <td>{{ record.fuel_amount }}L</td>
+                    <td>{{ record.fuel_efficiency|floatformat:1 }}km/L</td>
+             <form method ="post">
+               {% csrf_token %}
+                <button type="submit">削除</button>
+             </form>
+                    </td>
+                </tr>
+               {% endfor %}
+            </tbody>
+     </table>
+</div>
+</body>
+</html>
+
+ 
+ 

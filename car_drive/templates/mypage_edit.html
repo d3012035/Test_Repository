@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   </head>
+
+   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
+        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      </nav>
+      {% block content %}{% endblock %}
+     <form method="POST">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <input type="submit" value="更新">
+     </form>
+    <a class="navbar-brand" href="{% url 'Edrive:login' %}">戻る</a>
