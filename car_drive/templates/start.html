@@ -9,12 +9,11 @@
 <p>燃費計算で環境にやさしいドライブを</p>
 
       <nav>
-        {% if user.is_authenticated %}
-        {% else %}
+        
         <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログイン</a>
         <a class="navbar-brand" href="{% url 'Edrive:regist' %}">新規登録</a>
-        {% endif %}
+        
       </nav>
-      {% block content %}{% endblock %}
+      
    </body>
 </html>

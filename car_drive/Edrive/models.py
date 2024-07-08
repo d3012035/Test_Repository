@@ -4,33 +4,26 @@ from django.contrib.auth.models import (
 )
 from django.urls import reverse_lazy
 
+
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self,  email, password=None, **extra_fields):
         if not email:
             raise ValueError('Enter Email')
-        
         user = self.model(
-            username=username,
             email=email
         )
         user.set_password(password)
         user.save(using=self._db)
+       
         return user
     
-def create_superuser(self, username, email, password=None):
-        user = self.model(
-            username=username,
-            email=email,
-        )
-        user.set_password(password)
-        user.is_staff = True
-        user.is_active = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
-    
+def create_superuser(self, email, password=None, **extra_fields):
+    extra_fields.setdefault('is_staff', True)
+    extra_fields.setdefault('is_superuser', True)
+
+    return self.create_user(email, password, **extra_fields)
+   
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=150)
     email = models.EmailField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -54,8 +47,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def get_absolute_url(self):
-        return reverse_lazy('accounts:home')
+    def __str__(self):
+        return self.email
 
 
 
@@ -68,6 +61,7 @@ class BaseModel(models.Model):
         abstract = True
 
 class Users(BaseModel):
+    name = models.CharField(max_length=1000, default='default_name')
     user_name = models.CharField(max_length=50)
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
@@ -82,6 +76,7 @@ class Users(BaseModel):
         db_table = 'users'
         
 class Manufacturers(BaseModel):
+    name = models.CharField(max_length=1000, default='default_name')
     manufacturer_name = models.CharField(max_length=70)
     
     class Meta:
@@ -89,6 +84,7 @@ class Manufacturers(BaseModel):
         
     
 class CarModels(BaseModel):
+    name = models.CharField(max_length=1000, default='default_name')
     manufacturer = models.ForeignKey(Manufacturers, on_delete=models.CASCADE, null=True)
     car_model_name = models.CharField(max_length=120)
     engine_type = models.CharField(max_length=50)
@@ -101,8 +97,9 @@ class CarModels(BaseModel):
     
     
 class MyCars(BaseModel):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000, default='default_name')
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
+    car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE, default=1)
     purchase_on = models.DateField()
     next_oil_change_on = models.DateField()
     next_inspection_on = models.DateField()
@@ -114,17 +111,18 @@ class MyCars(BaseModel):
     
         
 class FuelRecords(BaseModel):
-    my_car = models.ForeignKey(MyCars, on_delete=models.CASCADE)
-    distance = models.FloatField()
-    fuel_amount = models.FloatField()
-    fuel_efficiency = models.FloatField(editable=False)
+    my_car = models.ForeignKey(MyCars, on_delete=models.CASCADE, default=1)
+    distance = models.FloatField(verbose_name="走行距離 (km)")
+    fuel_amount = models.FloatField(verbose_name="給油量 (L)")
+    fuel_efficiency = models.FloatField(verbose_name="燃費 (km/L)", blank=True, null=True, editable=False)
     
     def save(self, *args, **kwargs):
-        self.fuel_efficiency = self.distance / self.fuel_amount
+        if self.distance and self.fuel_amount:
+         self.fuel_efficiency = self.distance / self.fuel_amount
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.create_at} - {self.distance}km / {self.fuel_amount}L"
+        return f"{self.created_at} - {self.distance}km / {self.fuel_amount}L"
     
     class Meta:
         db_table = 'fuel_records'
@@ -135,7 +133,7 @@ class EcoDriveSites(BaseModel):
     
     class Meta:
         db_table = 'eco_drive_sites'
-#class Pictures(BaseModel):
+#class Pictures(BaseModel):rate
     
  #   picture = models.FileField(upload_to= 'picture/')
     

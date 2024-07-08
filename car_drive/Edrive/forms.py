@@ -1,21 +1,17 @@
 from django import forms
 from .models import Users, MyCars, FuelRecords, User, CarModels
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.forms import AuthenticationForm
 
-class LoginForm(forms.ModelForm):
-    email = forms.EmailField(label = 'メールアドレス')
-    password = forms.CharField(label='パスワード', widget=forms.PasswordInput())
-
-    class Meta:
-        model = Users
-        fields = ['email','password']
-        
-    def save(self, commit=False):
-        user = super().save(commit=False)
-        validate_password(self.cleaned_data['password'], user)
-        user.set_password(self.cleaned_data['password'])
-        user.save()
-        return user
+class LoginForm(forms.Form):
+    
+    email = forms.EmailField(
+        label = 'メールアドレス')
+    password = forms.CharField(
+        label='パスワード',
+        widget=forms.PasswordInput()
+    )
+    
         
 class RegistForm(forms.ModelForm):
     username = forms.CharField(label='名前/ニックネーム')
@@ -40,6 +36,9 @@ class TargetFuelForm(forms.ModelForm):
     class Meta:
         model = MyCars
         fields = ['target_fuel_efficiency']
+        labels = {
+            'target_fuel_efficiency':'目標燃費量(km/L)',
+        }
         widgets = {
             'target_fuel_efficiency': forms.NumberInput(attrs={'step': '0.1'}),
         }
@@ -50,31 +49,62 @@ class RecordsForm(forms.ModelForm):
     fuel_amount = forms.FloatField(label = '給油量')
     
     
+    
     class Meta:
         model = FuelRecords
-        fields = [ 'distance', 'fuel_amount', ]
+        fields = [ 'distance', 'fuel_amount']
         
 class MyCarDetailForm(forms.ModelForm):
-    manufacturers = forms.ChoiceField(label = 'メーカー')
-    choices=[
-        ('toyota', 'トヨタ', 'TOYOTA', 'とよた', '豊田'),
-        ('honda', 'ホンダ', 'HONDA', 'ほんだ', '本田'),
-        ('daihatsu', 'ダイハツ', 'DAIHATSU'),
-        ('nissan', 'ニッサン', 'NISSAN', '日産'),
+    MANUFACTURER_CHOICES = [
+        ('toyota', 'トヨタ'),
+        ('honda', 'ホンダ'),
+        ('daihatsu', 'ダイハツ'),
+        ('nissan', 'ニッサン'),
+    ]  
+    manufacturers = forms.ChoiceField(
+        label = 'メーカー',
+        choices=MANUFACTURER_CHOICES,          
+        required=True,
+        widget=forms.widgets.Select
+     )
+    
+    CarModel_CHOICES = [
+        ('AQUA', 'アクア'),
+        ('ROOMY','ルーミー'),
+        ('ALPHARD','アルファード'),
+        ('RAIZE', 'ライズ'),
+        ('N-BOX','エヌボックス'),
+        ('FREED','フリード'),
+        ('VEZEL', 'ヴェゼル'),
+        ('CANBUS', 'ムーヴキャンバス'),
+        ('Tanto','タント'),
+        ('Rocky', 'ロッキー'),
+        ('NOTE', 'ノート'),
+        ('SERENA','セレナ'),
+        ('DAYZ','デイズ'),
+        ('X-TRAIL', 'エクストレイル'),
+        
     ]
-    car_model_name = forms.ChoiceField(label= '車種')
-    choices=[
-        ('model_a','モデルA')
-             
-         ]
-    engine_type = forms.ChoiceField(label='エンジン')
-    choices=[
+    car_model_name = forms.ChoiceField(
+        label= '車種',
+        choices=CarModel_CHOICES,
+        required=True,
+        widget=forms.widgets.Select
+        )
+    
+    EngineType_CHOICES = [
         ('gasoline', 'ガソリン'),
         ('hybrid', 'ハイブリッド'),
         ('other', 'その他'),
     ]
-    color = forms.ChoiceField(label='カラー')
-    choices=[
+    engine_type = forms.ChoiceField(
+        label='エンジン',
+        choices=EngineType_CHOICES,
+        required=True,
+        widget=forms.widgets.Select
+        )
+    
+    Color_CHOICES = [ 
         ('red', 'レッド'),
         ('blue','ブルー'),
         ('white','ホワイト'),
@@ -87,6 +117,13 @@ class MyCarDetailForm(forms.ModelForm):
         ('brown', 'ブラウン'),
         
     ]
+    color = forms.ChoiceField(
+        label='カラー',
+        choices=Color_CHOICES,
+        required=True,
+        widget=forms.widgets.Select
+        )
+   
     purchase_on = forms.DateField(label='購入年月')
     
     class Meta:
@@ -94,11 +131,17 @@ class MyCarDetailForm(forms.ModelForm):
         fields = [ 'car_model_name', 'engine_type', 'color' ]
         
 class MyPageEditForm(forms.ModelForm):
-    user_name = forms.CharField(label = '名前/ニックネーム')
-    licence_expiry = forms.DateField(label = '運転免許証')
-    next_oil_change_on = forms.DateField(label = 'オイル交換')
-    next_inspection_on = forms.DateField(label = '車検')
+    user_name = forms.CharField(label = '名前/ニックネーム', max_length=50, required=False)
+    licence_expiry_on = forms.DateField(label = '運転免許証', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     
+    class Meta:
+        model = Users
+        fields = ['user_name', 'licence_expiry_on']
+
+class MyCarsForm(forms.ModelForm):
+    next_oil_change_on = forms.DateField(label='オイル交換', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    next_inspection_on = forms.DateField(label='車検', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         model = MyCars
         fields = ['next_oil_change_on', 'next_inspection_on']

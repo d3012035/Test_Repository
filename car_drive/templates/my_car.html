@@ -19,30 +19,32 @@
 <div class="container">
         <h1>マイカー登録</h1>
         <div class="car-info">
-            <table border='1'>
+            <table class="table table-bordered">
+            <tbody>
                 <tr>
-                    <th>メーカー</th>
-                    <td>{{ object.manufacturer }}</td>
+                    <td style="width: 30%;">メーカー</td>
+                    <td style="width: 30%;">{{ my_car.car_model.manufacturer.name }}</td>
                 </tr>
                 <tr>
-                    <th>車種</th>
-                    <td>{{ object.model }}</td>
+                    <td>車種</td>
+                    <td>{{ car_models.car_model.name }}</td>
                 </tr>
                 <tr>
-                    <th>エンジン</th>
-                    <td>{{ object.engine }}</td>
+                    <td>エンジン</td>
+                    <td>{{ car_model.engine }}</td>
                 </tr>
                 <tr>
-                    <th>カラー</th>
-                    <td>{{ object.color }}</td>
+                    <td>カラー</td>
+                    <td>{{ car_model.color }}</td>
                 </tr>
                 <tr>
-                    <th>購入年月</th>
-                    <td>{{ object.purchase_date }}</td>
+                    <td>購入年月</td>
+                    <td>{{ my_car.purchase_on }}</td>
                 </tr>
+            </tbody>
             </table>
        <nav>
-          <a class="navbar-brand" href="{% url 'Edrive:mycar_add' %}">変更</a>
+          <a class="navbar-brand" href="{% url 'Edrive:mycar_detail'}"><!--pk=mycar.pk-->変更</a>
         </nav>
     </body>
 </html>

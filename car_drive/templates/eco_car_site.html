@@ -1,19 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
    <head>
       <meta charset="utf-8">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="{% static 'my_app/css/style.css' %}">
    </head>
   
 
    <body>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
-        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
-        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
-        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
-        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      <nav class="header-container">
+      <ul>
+        <li><a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a></li>
+        <li><a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a></li>
+        <li><a href="{% url 'Edrive:home' %}">
+             <img src = "{{ MEDIA_URL }}shinryoku.png" alt = "ホーム" class="logo">
+        </a><li>
+        <li><a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a></li>
+        <li><a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a></li>
+        <li><a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a></li>
         {% block content %}{% endblock %}
+      </ul>
     </nav>
 
 

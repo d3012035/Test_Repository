@@ -3,6 +3,13 @@
    <head>
       <meta charset="utf-8">
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <style>
+        .divider {
+            border-top: 2px solid black;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
    </head>
 
    <body>
@@ -16,11 +23,19 @@
       {% block content %}{% endblock %}
 
     <h3>マイページ</h3>
-    <h4>名前</h4>
-    <h4>運転免許証</h4>
-    <h4>オイル交換</h4>
-    <h4>車検</h4>
-    <a class="navbar-brand" href="{% url 'Edrive:login' %}">編集</a>
-    <h4>現在のドライバーレベル</h4>
+    <h4>名前/ニックネーム:{{ user.username }}</h4>
+    <h4>運転免許証:{{ user.licence_expiry_on }}</h4>
+
+     {% if user.mycars_set.exists %}
+        {% for car in user.mycars_set.all %}
+    <h4>オイル交換:{{ car.next_oil_change_on }}</h4>
+    <h4>車検:{{ car.next_inspection_on }}</h4>
+    {% endfor %}
+    {% endif %}
+
+    <hr class = "divider">
+
+    <a class="navbar-brand" href="{% url 'Edrive:mypage_edit' %}">編集</a>
+    <h4>現在のドライバーレベル:{{ user.driver_level }}</h4>
     </body>
 </html>

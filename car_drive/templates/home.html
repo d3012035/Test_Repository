@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
    <head>
@@ -14,7 +15,9 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
         <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
-        <img src = "C:\Users\d3012\Desktop\portfolio\img\shinryoku.png" alt = "ホーム">
+        <a href="{% url 'Edrive:home' %}">
+             <img src = "{% static 'Edrive/img/shinryoku.png' %} alt = "ホーム">
+        </a>
         <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
         <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
         <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>

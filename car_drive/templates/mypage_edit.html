@@ -3,6 +3,7 @@
    <head>
       <meta charset="utf-8">
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <title>mypage_edit</title> 
    </head>
 
    <body>
@@ -16,7 +17,9 @@
       {% block content %}{% endblock %}
      <form method="POST">
    {% csrf_token %}
-   {{ form.as_p }}
+    {{ my_page_form.as_p }}
+    {{ my_cars_form.as_p }}
+   
    <input type="submit" value="更新">
      </form>
-    <a class="navbar-brand" href="{% url 'Edrive:login' %}">戻る</a>
+    <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">戻る</a>

@@ -7,15 +7,18 @@
    </head>
    <body>
    <nav>
-        <form method="POST">
+   {% block content %}
+    <form method="POST">
           {% csrf_token %}
           {{ form.as_p }}
-   <input type="submit" value="ログイン">
-        </form>
-        {% if user.is_authenticated %}
-        {% else %}
+         <input type="hidden" name="next" value="/home/"> 
+         <input type="submit" value="ログイン">
+    </form>
+   {% endblock %}
+    
+       
         <a class="navbar-brand" href="{% url 'Edrive:regist' %}">新規登録</a>
-        {% endif %}
+        
    </nav>
    </body>
 </html>

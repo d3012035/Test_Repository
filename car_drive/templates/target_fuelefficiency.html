@@ -16,15 +16,15 @@
       </nav>
       {% block content %}{% endblock %}
    
-   <h4>{{ car_model_name }}の平均燃費量{{ average_fuel_efficiency }}</h4>
+   <h4>{{ car_models.car_model_name }}の平均燃費量:{{ car_models.average_fuel_efficiency }}</h4>
 <label for="target_fuel_efficiency">目標燃費量</label>
-<input type="text" id="target_fuel_efficiency" name="target_fuel_efficiency" value="{{ average_fuel_efficiency }} km/L">
+<!--input type="text" id="target_fuel_efficiency" name="target_fuel_efficiency" value="{{ average_fuel_efficiency }} km/L"-->
    <nav>
         <form method="POST">
            {% csrf_token %}
            {{ form.as_p }}km/L
    
-   <input type="submit" value="更新">
+   <button type="submit">更新</a>
         </form>
         {% if user.is_authenticated %}
         {% else %}

@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'Edrive',
 ]
 
+AUTH_USER_MODEL = 'Edrive.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -117,10 +119,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_local')
 
 LOGIN_URL = '/Edrive/login'
-LOGIN_REDIRECT_URL = '/Edrive/home/'
+LOGIN_REDIRECT_URL = '/Edrive/home'
 LOGOUT_REDIRECT_URL = '/Edrive/login'
 
 

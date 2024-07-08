@@ -1,5 +1,50 @@
-@media screen and (max-width:480px) {
-    img{
-        width: 40%;
-    }
+/* styles.css もしくは HTML 内の <style> タグで設定 */
+.divider {
+    border-top: 30px solid red; /* 横線のスタイル */
+    margin-top: 10px; /* 上部のマージン */
+    margin-bottom: 10px; /* 下部のマージン */
+}
+
+body {
+    font-family:Arial, sans,serif;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    background-color: #8BC34A; /* グローバルヘッダーの背景色 */
+    padding: 10px 20px;
+}
+
+.logo {
+    height: 50px; /* ロゴの高さ */
+    margin-right: 20px; /* ロゴとナビゲーションの間のスペース */
+}
+
+.navbar-brand {
+    font-size: 24px;
+    color: #fff;
+    text-decoration: none;
+    margin-right: auto; /* ナビゲーションを右に配置 */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 15px; /* ナビゲーション項目間のスペース */
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
 }
