@@ -22,8 +22,21 @@ def create_superuser(self, email, password=None, **extra_fields):
     extra_fields.setdefault('is_superuser', True)
 
     return self.create_user(email, password, **extra_fields)
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
    
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, BaseModel):
+    name = models.CharField(max_length=1000, default='default_name')
+    user_name = models.CharField(max_length=50)
+    password = models.CharField(max_length=200)
+    licence_expiry_on = models.DateField()
+    driver_level = models.IntegerField(default=1)
+    target_achievement_count = models.IntegerField(default=0)  
     email = models.EmailField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -51,29 +64,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-
-
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-class Users(BaseModel):
-    name = models.CharField(max_length=1000, default='default_name')
-    user_name = models.CharField(max_length=50)
-    email = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-    licence_expiry_on = models.DateField()
-    driver_level = models.IntegerField(default=1)
-    target_achievement_count = models.IntegerField(default=0)
-      
-    
-            
-            
-    class Meta:
-        db_table = 'users'
         
 class Manufacturers(BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
@@ -98,7 +88,7 @@ class CarModels(BaseModel):
     
 class MyCars(BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE, default=1)
     purchase_on = models.DateField()
     next_oil_change_on = models.DateField()

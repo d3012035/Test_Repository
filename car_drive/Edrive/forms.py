@@ -1,5 +1,5 @@
 from django import forms
-from .models import Users, MyCars, FuelRecords, User, CarModels
+from .models import  MyCars, FuelRecords, User, CarModels
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -135,7 +135,7 @@ class MyPageEditForm(forms.ModelForm):
     licence_expiry_on = forms.DateField(label = '運転免許証', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     
     class Meta:
-        model = Users
+        model = User
         fields = ['user_name', 'licence_expiry_on']
 
 class MyCarsForm(forms.ModelForm):

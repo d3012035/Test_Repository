@@ -17,7 +17,7 @@ from .forms import TargetFuelForm
 from .forms import RecordsForm
 from .forms import MyCarDetailForm
 from .forms import MyPageEditForm, MyCarsForm
-from .models import Users, MyCars, FuelRecords
+from .models import User, MyCars, FuelRecords
 from .models import CarModels
 from .models import FuelRecords
 from django.urls import reverse_lazy
@@ -52,12 +52,12 @@ class UserLoginView(FormView):
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(email=email, password=password)
-        next_url = request.POST['next']
+        next_url = request.GET.get('next')
         if user is not None and user.is_active:
              login(request, user)
         if next_url:
              return redirect(next_url)
-        return redirect('Edive:home')
+        return redirect('Edrive:home')
     #def form_valid(self, form):
     #    email = form.cleaned_data.get('email')
     #    password = form.cleaned_data.get('password')
@@ -97,12 +97,12 @@ class HomeView(LoginRequiredMixin,View):
             return render(request)
         
         try:
-          my_cars = MyCars.objects.filter(user=user_instance)
+          my_car = MyCars.objects.filter(user=user_instance)
         except MyCars.DoesNotExist:
-            my_cars = [] 
+            my_car = [] 
            
         try:  
-            fuel_records = FuelRecords.objects.filter(car__in=my_cars)
+            fuel_records = FuelRecords.objects.filter(id__in=my_car)
         except FuelRecords.DoesNotExist:
              fuel_records = []
                  
@@ -125,7 +125,7 @@ class HomeView(LoginRequiredMixin,View):
 
         context = {
             'user': user_instance,
-            'my_cars': my_cars,
+            'my_car': my_car,
             'fuel_records': fuel_records,
         }
 
