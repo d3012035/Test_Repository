@@ -3,31 +3,36 @@
 <html lang="ja">
    <head>
       <meta charset="utf-8">
-      <link rel="stylesheet" href="{% static 'my_app/css/style.css' %}">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Home</title>
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    </head>
   
-
    <body>
-      <nav class="header-container">
+       <header class="header-container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' user.pk %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' user.pk %}">マイページ</a>
+        <div class="logo">
+        <a href="{% url 'Edrive:home' %}" class="home-link">
+             <img src = "{% get_media_prefix %}shinryoku.png"  alt = "ホーム">
+             <p>HOME</p>
+        </a>
+        </div>
+        <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+      </nav>
+      </header>
+      {% block content %}{% endblock %}
+    <div class="link-container">
       <ul>
-        <li><a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a></li>
-        <li><a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a></li>
-        <li><a href="{% url 'Edrive:home' %}">
-             <img src = "{{ MEDIA_URL }}shinryoku.png" alt = "ホーム" class="logo">
-        </a><li>
-        <li><a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a></li>
-        <li><a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a></li>
-        <li><a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a></li>
-        {% block content %}{% endblock %}
+
+      <li><a href = "https://rentacar.carlifestadium.com/blog/smart/2631/">【ハイブリッドvsガソリン】何キロ走れば元を取れる？簡単な計算表付で比較してみた|カーチップス</a></li>
+        
+      <li><a href ="https://rakunori.idex.co.jp/column/column_45.html#:~:text=%E3%81%9D%E3%82%8C%E3%81%A7%E3%81%AF%E3%80%81%E5%A4%9A%E3%81%8F%E3%81%AE%E4%BA%BA%E3%81%8C%E6%A4%9C%E8%A8%8E%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%80%8C%E3%82%AC%E3%82%BD%E3%83%AA%E3%83%B3%E8%BB%8A%E4%BB%A5%E5%A4%96%E3%80%8D%E3%81%A8%E3%81%AF%E3%80%81%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AB%E3%81%AF%E3%81%A9%E3%81%AE%E3%82%BF%E3%82%A4%E3%83%97%E3%81%AA%E3%81%AE%E3%81%A7%E3%81%97%E3%82%87%E3%81%86%E3%81%8B%E3%80%82,%E7%A8%AE%E9%A1%9E%E5%88%A5%E3%81%AE%E5%9B%9E%E7%AD%94%E3%81%AB%E3%82%88%E3%82%8B%E3%81%A8%E3%80%81%E3%83%80%E3%83%B3%E3%83%88%E3%83%84%E3%81%AE%E3%83%88%E3%83%83%E3%83%97%E3%81%AF%E3%80%8C%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E8%BB%8A%E3%80%8D%E3%81%A771%EF%BC%85%E3%80%81%E6%AC%A1%E3%81%84%E3%81%A7%E3%80%8CEV%E3%80%8D%E3%81%8C31%EF%BC%85%E3%80%81%E3%80%8C%E3%83%87%E3%82%A3%E3%83%BC%E3%82%BC%E3%83%AB%E8%BB%8A%E3%80%8D%E3%81%8C25%EF%BC%85%E3%80%81%20%E3%80%8C%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E8%BB%8A%E3%80%8D%E3%81%8C14%EF%BC%85%E3%80%81%E3%80%8C%E6%B0%B4%E7%B4%A0%E8%87%AA%E5%8B%95%E8%BB%8A%E3%80%8D%E3%81%8C7%EF%BC%85%E3%81%A8%E3%81%84%E3%81%86%E7%B5%90%E6%9E%9C%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%97%E3%81%9F%EF%BC%88%E8%A4%87%E6%95%B0%E5%9B%9E%E7%AD%94%EF%BC%89%E3%80%82">EVやハイブリッド車はまだ早い!?ガソリン車以外を選ぶホンネとは|コラム一覧|「身近なSSが見守る、安心・気軽なマイカーリース」マイカーリースラクのり</a></li>
+        
+      <li><a href ="https://ondankataisaku.env.go.jp/decokatsu/ecodriver/point/">エコドライブ10のすすめ|エコドライブ|COOL CHOICE 未来のために、いま選ぼう。</a></li>
       </ul>
-    </nav>
-
-
-        <a href = "https://rentacar.carlifestadium.com/blog/smart/2631/">【ハイブリッドvsガソリン】何キロ走れば元を取れる？簡単な計算表付で比較してみた|カーチップス</a>
-        
-        <a href ="https://rakunori.idex.co.jp/column/column_45.html#:~:text=%E3%81%9D%E3%82%8C%E3%81%A7%E3%81%AF%E3%80%81%E5%A4%9A%E3%81%8F%E3%81%AE%E4%BA%BA%E3%81%8C%E6%A4%9C%E8%A8%8E%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%80%8C%E3%82%AC%E3%82%BD%E3%83%AA%E3%83%B3%E8%BB%8A%E4%BB%A5%E5%A4%96%E3%80%8D%E3%81%A8%E3%81%AF%E3%80%81%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AB%E3%81%AF%E3%81%A9%E3%81%AE%E3%82%BF%E3%82%A4%E3%83%97%E3%81%AA%E3%81%AE%E3%81%A7%E3%81%97%E3%82%87%E3%81%86%E3%81%8B%E3%80%82,%E7%A8%AE%E9%A1%9E%E5%88%A5%E3%81%AE%E5%9B%9E%E7%AD%94%E3%81%AB%E3%82%88%E3%82%8B%E3%81%A8%E3%80%81%E3%83%80%E3%83%B3%E3%83%88%E3%83%84%E3%81%AE%E3%83%88%E3%83%83%E3%83%97%E3%81%AF%E3%80%8C%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E8%BB%8A%E3%80%8D%E3%81%A771%EF%BC%85%E3%80%81%E6%AC%A1%E3%81%84%E3%81%A7%E3%80%8CEV%E3%80%8D%E3%81%8C31%EF%BC%85%E3%80%81%E3%80%8C%E3%83%87%E3%82%A3%E3%83%BC%E3%82%BC%E3%83%AB%E8%BB%8A%E3%80%8D%E3%81%8C25%EF%BC%85%E3%80%81%20%E3%80%8C%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E8%BB%8A%E3%80%8D%E3%81%8C14%EF%BC%85%E3%80%81%E3%80%8C%E6%B0%B4%E7%B4%A0%E8%87%AA%E5%8B%95%E8%BB%8A%E3%80%8D%E3%81%8C7%EF%BC%85%E3%81%A8%E3%81%84%E3%81%86%E7%B5%90%E6%9E%9C%E3%81%AB%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%97%E3%81%9F%EF%BC%88%E8%A4%87%E6%95%B0%E5%9B%9E%E7%AD%94%EF%BC%89%E3%80%82">EVやハイブリッド車はまだ早い!?ガソリン車以外を選ぶホンネとは|コラム一覧|「身近なSSが見守る、安心・気軽なマイカーリース」マイカーリースラクのり</a>
-        
-        <a href ="https://ondankataisaku.env.go.jp/decokatsu/ecodriver/point/">エコドライブ10のすすめ|エコドライブ|COOL CHOICE 未来のために、いま選ぼう。</a>
-
   </body>
 </html>

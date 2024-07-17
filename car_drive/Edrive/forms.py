@@ -1,5 +1,5 @@
 from django import forms
-from .models import  MyCars, FuelRecords, User, CarModels
+from .models import  MyCars, FuelRecords, User, CarModels, Manufacturers
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -55,18 +55,21 @@ class RecordsForm(forms.ModelForm):
         fields = [ 'distance', 'fuel_amount']
         
 class MyCarDetailForm(forms.ModelForm):
+    
+    
     MANUFACTURER_CHOICES = [
         ('toyota', 'トヨタ'),
         ('honda', 'ホンダ'),
         ('daihatsu', 'ダイハツ'),
         ('nissan', 'ニッサン'),
     ]  
-    manufacturers = forms.ChoiceField(
+    manufacturer_name = forms.ChoiceField(
         label = 'メーカー',
         choices=MANUFACTURER_CHOICES,          
         required=True,
-        widget=forms.widgets.Select
+        widget=forms.widgets.Select(attrs={'class': 'form-control'})
      )
+    
     
     CarModel_CHOICES = [
         ('AQUA', 'アクア'),
@@ -89,7 +92,7 @@ class MyCarDetailForm(forms.ModelForm):
         label= '車種',
         choices=CarModel_CHOICES,
         required=True,
-        widget=forms.widgets.Select
+        widget=forms.widgets.Select(attrs={'class':'form-control'})
         )
     
     EngineType_CHOICES = [
@@ -101,7 +104,7 @@ class MyCarDetailForm(forms.ModelForm):
         label='エンジン',
         choices=EngineType_CHOICES,
         required=True,
-        widget=forms.widgets.Select
+        widget=forms.widgets.Select(attrs={'class':'form-control'})
         )
     
     Color_CHOICES = [ 
@@ -121,26 +124,46 @@ class MyCarDetailForm(forms.ModelForm):
         label='カラー',
         choices=Color_CHOICES,
         required=True,
-        widget=forms.widgets.Select
+        widget=forms.widgets.Select(attrs={'class':'form-control'})
         )
-   
-    purchase_on = forms.DateField(label='購入年月')
     
     class Meta:
         model = CarModels
-        fields = [ 'car_model_name', 'engine_type', 'color' ]
+        fields = [ 'manufacturer_name', 'car_model_name', 'engine_type', 'color' ]
         
+    def __init__(self, *args, **kwargs):
+        super(MyCarDetailForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['manufacturer_name'].initial = self.instance.manufacturer.manufacturer_name
+
+    def save(self, commit=True):
+        instance = super(MyCarDetailForm, self).save(commit=False)
+        manufacturer_name = self.cleaned_data['manufacturer_name']
+        manufacturer, created = Manufacturers.objects.get_or_create(manufacturer_name=manufacturer_name)
+        instance.manufacturer = manufacturer
+        if commit:
+            instance.save()
+        return instance
+        
+class MyCarDeForm(forms.ModelForm):
+    purchase_on = forms.DateField(label = '購入年月', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
+    
+    class Meta:
+        model = MyCars
+        fields = ['purchase_on']
+            
 class MyPageEditForm(forms.ModelForm):
-    user_name = forms.CharField(label = '名前/ニックネーム', max_length=50, required=False)
-    licence_expiry_on = forms.DateField(label = '運転免許証', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    user_name = forms.CharField(label = '名前/ニックネーム', max_length=50, required=False,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    licence_expiry_on = forms.DateField(label = '運転免許証', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
+    
     
     class Meta:
         model = User
         fields = ['user_name', 'licence_expiry_on']
 
 class MyCarsForm(forms.ModelForm):
-    next_oil_change_on = forms.DateField(label='オイル交換', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    next_inspection_on = forms.DateField(label='車検', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    next_oil_change_on = forms.DateField(label='オイル交換', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
+    next_inspection_on = forms.DateField(label='車検', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
 
     class Meta:
         model = MyCars

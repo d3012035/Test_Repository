@@ -9,19 +9,23 @@ class UserManager(BaseUserManager):
     def create_user(self,  email, password=None, **extra_fields):
         if not email:
             raise ValueError('Enter Email')
-        user = self.model(
-            email=email
-        )
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
        
         return user
     
-def create_superuser(self, email, password=None, **extra_fields):
-    extra_fields.setdefault('is_staff', True)
-    extra_fields.setdefault('is_superuser', True)
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
 
-    return self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
     user_name = models.CharField(max_length=50)
     password = models.CharField(max_length=200)
-    licence_expiry_on = models.DateField()
+    licence_expiry_on = models.DateField(null=True)
     driver_level = models.IntegerField(default=1)
     target_achievement_count = models.IntegerField(default=0)  
     email = models.EmailField(max_length=255, unique=True)
@@ -55,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         verbose_name='user permissions'
     )
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['user_name']
 
 
     objects = UserManager()
@@ -75,12 +79,12 @@ class Manufacturers(BaseModel):
     
 class CarModels(BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
-    manufacturer = models.ForeignKey(Manufacturers, on_delete=models.CASCADE, null=True)
+    manufacturer = models.ForeignKey(Manufacturers, on_delete=models.CASCADE, null=True, )
     car_model_name = models.CharField(max_length=120)
     engine_type = models.CharField(max_length=50)
     color = models.CharField(max_length=150)
-    avarage_fuel_efficiency = models.FloatField()
-    car_group = models.CharField(max_length=200)
+    average_fuel_efficiency = models.FloatField(null=True, default=None)
+    car_group = models.CharField(max_length=200, null=True, default=None)
     
     class Meta:
         db_table = 'car_models'
@@ -88,11 +92,11 @@ class CarModels(BaseModel):
     
 class MyCars(BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE, default=1)
-    purchase_on = models.DateField()
-    next_oil_change_on = models.DateField()
-    next_inspection_on = models.DateField()
+    user = models.ForeignKey(User, related_name='mycars', on_delete=models.CASCADE)
+    car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE,null=True)
+    purchase_on = models.DateField(null=True)
+    next_oil_change_on = models.DateField(null=True)
+    next_inspection_on = models.DateField(null=True)
     target_fuel_efficiency = models.FloatField(null=True, blank=True)
     
     
@@ -108,7 +112,7 @@ class FuelRecords(BaseModel):
     
     def save(self, *args, **kwargs):
         if self.distance and self.fuel_amount:
-         self.fuel_efficiency = self.distance / self.fuel_amount
+         self.fuel_efficiency = float(self.distance) / float(self.fuel_amount)
         super().save(*args, **kwargs)
 
     def __str__(self):

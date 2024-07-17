@@ -1,31 +1,62 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
    <head>
       <meta charset="utf-8">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>detail</title>
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    </head>
   
    <body>
-   
+       <header class="header-container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
-        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
-        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' user.pk %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' user.pk %}">マイページ</a>
+        <div class="logo">
+        <a href="{% url 'Edrive:home' %}" class="home-link">
+             <img src = "{% get_media_prefix %}shinryoku.png"  alt = "ホーム">
+             <p>HOME</p>
+        </a>
+        </div>
         <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
         <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
       </nav>
+      </header>
       {% block content %}{% endblock %}
 
-      <form method="POST" action="">
+    <div class="detail-container">
+       <form method="POST" action="">
    {% csrf_token %}
-   {{ form.as_p }}
-   <input type="submit" value="更新">
+   <div class="form-group">
+                {{ form1.manufacturer_name.label_tag }}
+                {{ form1.manufacturer_name }}
+            </div>
+            <div class="form-group">
+                {{ form1.car_model_name.label_tag }}
+                {{ form1.car_model_name }}
+            </div>
+            <div class="form-group">
+                {{ form1.engine_type.label_tag }}
+                {{ form1.engine_type }}
+            </div>
+            <div class="form-group">
+                {{ form1.color.label_tag }}
+                {{ form1.color }}
+            </div>
+            <div class="form-group">
+                {{ form2.purchase_on.label_tag }}
+                {{ form2.purchase_on }}
+            </div>
+            <div class="btn-container">
+   <input type="submit" value="更新" class="btn">
 </form>
-    <body>
 
-
-      <nav>
-          <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">戻る</a>
+      <nav class="detail-navbar">
+          <a class="navbar-brand" href="{% url 'Edrive:my_car' user.pk %}">戻る</a>
       </nav>
+      </div>
+    </div>
     </body>
 </html>

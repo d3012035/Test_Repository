@@ -1,0 +1,849 @@
+/* styles.css もしくは HTML 内の <style> タグで設定 */
+@charset "UTF-8";
+
+/* style.css */
+
+.divider {
+    border-top: 30px solid red; /* 横線のスタイル */
+    margin-top: 10px; /* 上部のマージン */
+    margin-bottom: 10px; /* 下部のマージン */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header-container {
+    text-align: center;
+    background-color: #81b445; /* グローバルヘッダーの背景色 */
+    padding: 1px 0;
+    margin-top: 50px;
+    position: relative;
+    border:1px solid black;
+    height:auto;
+}
+
+.header-container a.navbar-brand{
+    color: #fafdbd;
+    text-decoration: none;
+    font-weight: 400;
+    padding: 0.5px;
+    justify-content: space-around;
+}
+
+.logo img{
+    width:70px;
+    height: 70px; 
+    border: 1px solid black;/* ロゴの高さ */
+ /* ロゴとナビゲーションの間のスペース */
+}
+
+.navbar-brand {
+    font-size: 20px;
+    color: #fafdbd;
+    display: flex;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 15px; /* ナビゲーション項目間のスペース */
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    width: 45%;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.footer a {
+    color: #8BC34A;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.image-container {
+    text-align: center;
+    margin-top: 1%;
+}
+
+
+main {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+h1::before {
+    content: url('path/to/your/logo.png'); /* ここにロゴ画像のパスを設定します */
+    margin-right: 10px;
+}
+
+.link-container ul {
+    list-style: none;
+    margin-top: 40px;
+    padding: 10;
+}
+
+.link-container ul li {
+    margin: 10px 0;
+}
+
+.link-container ul li a {
+    color: #009688;
+    text-decoration: none;
+}
+
+.link-container ul li a:hover {
+    text-decoration: underline;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #fafdbd;
+    justify-content: space-around;
+}
+
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+nav ul li {
+    margin: 0 15px;
+    justify-content: space-around;
+}
+
+nav ul li a {
+    color: #fafdbd;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    justify-content: space-around;
+}
+
+
+
+.logo .home-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    text-decoration: none;
+    margin: 0 10px;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+}
+
+
+
+.logo p {
+    margin: 2px 0 100px 0;
+    font-size: 20px;
+    color: #000000;
+    font-weight:400;
+}
+
+.start-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.start-page h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.start-page h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight:300;
+}
+
+.start-page nav {
+    display: flex;
+    justify-content: center;
+}
+
+.start-page nav a {
+    font-size: 20px;
+    color: #208b40;
+    display: flex;
+    margin: 0 50px;
+}
+
+.login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff; /* 背景色 */
+}
+
+.login form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 影の設定 */
+    width: 300px; /* フォームの幅 */
+}
+
+.login-form h2 {
+    text-align: left;
+    margin-bottom: 10px;
+    font-weight: 100;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+    width: 100%; /* 入力フィールドの幅を100%に設定 */
+    padding: 10px; /* 入力フィールドの内側の余白 */
+    font-size: 18px; /* 文字のサイズを大きく */
+    margin-bottom: 15px; /* 下部の余白 */
+    border: 1px solid #ccc; /* 枠線 */
+    border-radius: 3px; /* 角丸 */
+}
+
+.login-form input[type="submit"] {
+    width: 100%; /* ボタンの幅を100%に設定 */
+    padding: 10px; /* ボタンの内側の余白 */
+    background-color: #dcdee1; /* ボタンの背景色 */
+    color: black; /* ボタンのテキスト色 */
+    cursor: pointer; /* マウスカーソルをポインターに */
+}
+
+.login-form input[type="submit"]:hover {
+    background-color: #cfd2d6; /* ホバー時の背景色 */
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.register-link a {
+    color: #007bff; /* リンクの色 */
+    text-decoration: none; /* 下線をなしに */
+}
+
+.register-link a:hover {
+    text-decoration: underline; /* ホバー時に下線を表示 */
+}
+
+input[type="submit"] {
+    margin-top: 10px;
+    padding: 10px 50px;
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.login-page nav a {
+    font-size: 20px;
+    color: #208b40;
+    display: flex;
+    padding:50px 80px 50px ;
+}
+
+.regist-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff; /* 背景色 */
+}
+
+.regist form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 影の設定 */
+    width: 300px; /* フォームの幅 */
+    text-align: center; /* テキストを中央揃え */
+}
+
+.regist-form h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px; /* タイトルの文字サイズを大きく */
+}
+
+.regist-form p {
+    text-align: left; /* テキストを左揃え */
+    font-size: 14px; /* 補足テキストの文字サイズを小さく */
+    color: #888; /* 補足テキストの色 */
+    margin-top: 5px; /* 上部の余白 */
+    margin-bottom: 15px; /* 下部の余白 */
+}
+
+.regist-form input[type="text"],
+.regist-form input[type="email"],
+.regist-form input[type="password"] {
+    width: calc(100% - 40px); /* 入力フィールドの幅を計算 */
+    padding: 10px; /* 入力フィールドの内側の余白 */
+    font-size: 18px; /* 文字のサイズを大きく */
+    margin-bottom: 15px; /* 下部の余白 */
+    border: 1px solid #ccc; /* 枠線 */
+    border-radius: 3px; /* 角丸 */
+/* padding や border を要素の幅に含める */
+}
+
+.regist-form input[type="submit"] {
+    width: calc(100% - 40px); /* ボタンの幅を計算 */
+    padding: 10px; /* ボタンの内側の余白 */
+    background-color: #dcdee1; /* ボタンの背景色 */
+    color: black; /* ボタンのテキスト色 */
+    cursor: pointer; /* マウスカーソルをポインターに */
+}
+
+.regist-form input[type="submit"]:hover {
+    background-color: #cfd2d6; /* ホバー時の背景色 */
+}
+
+.navbar-brand {
+    display: flex; /* ブロック要素として表示 */
+    text-align: center; /* テキストを中央揃え */
+    margin-top: 10px; /* 上部の余白 */
+}
+
+.regist-page nav a {
+    font-size: 20px;
+    color: #208b40;
+    display: flex;
+    padding:50px 120px 50px ;
+}
+
+.car-info h3{
+    margin-top: 60px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+.car-info  .navbar-brand{
+    color: #208b40; /* リンクのテキスト色を指定 */
+    text-decoration: none;
+     /* 下線をなしにする */
+    font-size:20px;
+    display: block;
+    margin: 30px auto;
+    text-align: center;
+    width:max-content;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline; /* ホバー時に下線を表示 */
+}
+
+.table-bordered {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse; /* セルの間の境界線を完全に統合 */
+}
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid #ddd; /* セルに境界線を設定 */
+    padding: 8px; /* セルの内側の余白 */
+    text-align: center; /* テキストを中央揃え */
+    width: auto; /* カラムの幅を50%に設定 */
+}
+
+.my_page .navbar-brand{
+    color: #208b40; /* リンクのテキスト色を指定 */
+    text-decoration: none;
+     /* 下線をなしにする */
+    font-size:20px;
+    display: inline-block;
+    margin-left: 30px;
+}
+
+.my_page h3, .my_page h4{
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+.driver-level-box {
+    display: inline-block; /* インラインブロック要素にして横に並べる */
+    padding: 5px 10px; /* 内側の余白を追加 */
+    border: 1px solid #000; /* 枠線を追加 */
+    background-color: #ffffff; /* 背景色を追加 */
+    font-weight: bold; /* 文字を太くする */
+}
+
+
+.detail-container input[type="submit"] {
+    width: 100%; /* 送信ボタンをフォームの幅に合わせる */
+    padding: 10px;
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.detail-container input[type="submit"]:hover {
+    background-color: #cfd2d6; /* ボタンをホバーしたときの色 */
+}
+
+.detail-navbar {
+    display: flex;
+    justify-content: center; /* 中央揃え */
+    margin-top: 20px;
+}
+
+.detail-navbar a {
+    color: #208b40;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.detail-container form {
+    width: 50%; /* フォームを親コンテナの幅に合わせる */
+    margin-bottom: 60px;
+}
+
+.detail-container form .form-group {
+    margin-bottom: 15px;
+}
+
+.detail-container form .form-group label {
+    font-size: 16px; /* ラベルの文字サイズを大きく */
+    margin-bottom: 5px;
+    display: block;
+    
+}
+
+
+.detail-container form .form-group select,
+.detail-container form .form-control {
+    width: 100%; /* 入力フィールドとセレクトボックスの幅を100%に */
+    padding: 10px;
+    font-size: 14px; /* 入力フィールドとセレクトボックスの文字サイズを大きく */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.detail-container form .btn {
+    width: auto; /* ボタンの幅を自動に設定 */
+    padding: 5px 50px; /* パディングを設定 */
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    margin: 0 auto; /* ボタンの文字サイズを調整 */
+}
+
+.detail-container .btn:hover {
+    background-color: #cfd2d6; /* ボタンをホバーしたときの色 */
+}
+
+.detail-container form .btn-container {
+    display: flex;
+    justify-content: center; /* ボタンコンテナを中央に配置 */
+    margin-top: 20px;
+}
+
+.edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 要素を中央に配置 */
+    margin-top: 50px;
+}
+
+.edit form {
+    width: 40%; /* フォームを親コンテナの幅に合わせる */
+    margin-bottom: 50px;
+}
+
+.edit form .form-group {
+    margin-bottom: 20px;
+}
+
+.edit form label {
+    font-size: 15px; /* ラベルの文字サイズを大きく */
+    margin-bottom: 10px;
+    display: block;
+}
+
+.edit form .form-group input.form-control,
+.edit form .form-control {
+    width: 100%; /* 入力フィールドとセレクトボックスの幅を100%に */
+    padding: 10px;
+    font-size: 16px; /* 入力フィールドとセレクトボックスの文字サイズを大きく */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.edit form input[type="submit"] {
+    padding: 10px 30px; /* パディングを設定 */
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    margin: 20px auto; /* ボタンを中央に配置 */
+    display: block;
+}
+
+.edit form input[type="submit"]:hover {
+    background-color: #cfd2d6; /* ボタンをホバーしたときの色 */
+}
+
+.edit .navbar-brand {
+    padding: 10px 20px; /* パディングを設定 */
+    color: #208b40;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none; /* リンクの下線を消す */
+    margin: 10px auto; /* リンクを中央に配置 */
+    display: block;
+}
+
+/* 中央配置用の親コンテナ */
+.records {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 子要素を中央に配置 */
+    margin-top: 50px;
+}
+
+/* フォームのスタイル */
+.records form {
+    width: 50%; /* フォームを親コンテナの幅に合わせる */
+    margin-bottom: 20px;
+}
+
+.records form .form-group {
+    margin-bottom: 15px;
+}
+
+.records form label {
+    font-size: 18px; /* ラベルの文字サイズを大きく */
+    margin-bottom: 10px;
+    display: block;
+}
+
+.records form input[type="text"],
+.records form input[type="password"],
+.records form input[type="email"],
+.records form input[type="date"],
+.records form input[type="datetime-local"],
+.records form input[type="number"],
+.records form select,
+.records form textarea {
+    width: 100%; /* 入力フィールドとセレクトボックスの幅を100%に */
+    padding: 12px;
+    font-size: 16px; /* 入力フィールドとセレクトボックスの文字サイズを大きく */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.records form input[type="submit"] {
+    padding: 10px 30px; /* パディングを設定 */
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    margin: 20px auto; /* ボタンを中央に配置 */
+    display: block;
+}
+
+.records form input[type="submit"]:hover {
+    background-color: #cfd2d6; /* ボタンをホバーしたときの色 */
+}
+
+.records .navbar-brand {
+    padding: 10px 20px; /* パディングを設定 */
+    color: #208b40;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none; /* リンクの下線を消す */
+    margin: 10px auto; /* リンクを中央に配置 */
+    display: block;
+}
+
+/* テーブルのスタイル */
+.records-container {
+    display: flex;
+    justify-content: center; /* 子要素を中央に配置 */
+    margin-top: 30px;
+    margin-bottom: 80px;
+}
+
+.records-container table {
+    width: 130%; /* テーブルの幅を80%に */
+    border-collapse: collapse;
+}
+
+.records-container th, .records-container td {
+    padding: 10px;
+    text-align: center; /* テキストを中央に配置 */
+    border: 1px solid #ccc;
+}
+
+.records-container th {
+    background-color: #f5f5f5;
+}
+
+
+.target {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 子要素を中央に配置 */
+    margin-top: 50px;
+}
+
+/* フォームのスタイル */
+.target form {
+    width: 50%; /* フォームを親コンテナの幅に合わせる */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.target form .form-group {
+    margin-bottom: 15px;
+}
+
+.target form label {
+    font-size: 18px; /* ラベルの文字サイズを大きく */
+    margin-bottom: 10px;
+    text-align: left;
+    display: block;
+}
+
+.target form input[type="text"],
+.target form input[type="password"],
+.target form input[type="email"],
+.target form input[type="date"],
+.target form input[type="datetime-local"],
+.target form input[type="number"],
+.target form select,
+.target form textarea {
+    width: 100%; /* 入力フィールドとセレクトボックスの幅を100%に */
+    padding: 10px;
+    font-size: 16px; /* 入力フィールドとセレクトボックスの文字サイズを大きく */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.target form button[type="submit"] {
+    padding: 10px 30px; /* パディングを設定 */
+    background-color: #dcdee1;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    margin: 40px auto; /* ボタンを中央に配置 */
+    display: block;
+}
+
+.target form button[type="submit"]:hover {
+    background-color: #cfd2d6; /* ボタンをホバーしたときの色 */
+}
+
+.target .navbar-brand {
+    padding: 10px 20px; /* パディングを設定 */
+    color: #208b40;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none; /* リンクの下線を消す */
+    margin: 10px auto; /* リンクを中央に配置 */
+    display: block;
+}
+
+.left-container {
+    float: left;
+    width: 30%; /* 適宜調整してください */
+    margin: 20px;
+}
+.achievement-container {
+    display: flex;
+    text-align: center; /* 上揃え */
+    margin: 20px 20px;
+    gap:40px;
+}
+
+.target-achievement, .actual-achievement {
+    margin-bottom: 20px;
+}
+
+.target-achievement h4, .actual-achievement h4 {
+    margin-bottom: 50px;
+    margin-left: 80px;
+    text-align: left;
+}
+
+.value {
+    font-size: 30px;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-bottom: 30px;
+    line-height: 150px; /* 高さに合わせて調整 */
+    width: 150px ; /* 丸の幅 */
+    height: 150px ; /* 丸の高さ */
+    border-radius: 50%; /* 円形にする */
+    border: 2px solid black; /* 枠
+}
+
+.value .unit {
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    right: -30px; /* 適宜調整してください */
+    transform: translateY(-50%);
+}
+
+.nav-links {
+    display: flex;
+    justify-content:left;
+    margin: 20px 0;
+}
+
+.nav-links .navbar-brand {
+    padding: 10px 20px; /* パディングを設定 */
+    color: #208b40;
+    font-size: 20px;
+    text-align: left;
+    text-decoration: none; /* リンクの下線を消す */
+    margin-bottom: 10px;/* リンクを中央に配置 */
+    display: block;
+    border-radius: 5px;
+}
+
+
+#chart-container {
+    width: 80%;
+    margin: 20px auto;
+    float: right; 
+}
+
+.achievement-info {
+    display: flex;
+    flex-direction: row; /* 水平方向に並べる */
+    justify-content: flex-end; /* 右寄せに配置 */
+    margin-bottom: 10px; /* 下部のマージンを設定 */
+}
+
+.achievement-info p {
+    margin-left: 10px; /* パラグラフ要素の左マージンを設定 */
+}
+
+/* 新たに追加するスタイル */
+.current-level {
+    display: inline-block;
+    padding: 10px 10px; /* 丸のサイズに応じて調整 */
+    border-radius: 50%;
+    font-weight: bold;
+    border: 2px solid black; 
+}
+
+.droplet {
+    display: inline-block;
+    padding: 50px 100px;
+    background-color: lightblue; /* しずくの背景色 */
+    clip-path: ellipse(90% 80% at 70% 40%);
+    margin-right: 10px; /* 右マージンを追加して隣の要素との間隔を調整 */
+    border: 2px solid black; 
+    margin-bottom: 10px;
+}
+
+.parallelogram {
+    display: inline-block;
+    transform: skew(-20deg); /* 平行四辺形の角度 */
+    background-color: #b4f188; /* 背景色 */
+    padding: 10px 20px; /* 内側のパディング */
+    margin-top: 10px 50px; /* 上部マージン */
+    margin-bottom: 20px 50px;
+    border: 1px solid black;
+    text-align: center; /* 中央配置 */
+    position: absolute; /* 絶対位置 */
+    top: 0; /* 上端に配置 */
+    left: 50%; /* 水平中央に配置 */
+   
+}
+
+.parallelogram h1 {
+    margin: 0; /* テキストのマージン */
+    transform: skew(20deg); /* テキストを元に戻す */
+    text-align: center; /* 中央配置 */
+}

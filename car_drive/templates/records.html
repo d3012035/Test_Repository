@@ -1,26 +1,47 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
    <head>
       <meta charset="utf-8">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <title>FuelRecords</title> 
-  </head>
-
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>FuelRecords</title>
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   </head>
+  
    <body>
+       <header class="header-container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'Edrive:my_car' %}">マイカー</a>
-        <a class="navbar-brand" href="{% url 'Edrive:mypage' %}">マイページ</a>
-        <a class="navbar-brand" href="{% url 'Edrive:home' %}">HOME</a>
+        <a class="navbar-brand" href="{% url 'Edrive:my_car' user.pk %}">マイカー</a>
+        <a class="navbar-brand" href="{% url 'Edrive:mypage' user.pk %}">マイページ</a>
+        <div class="logo">
+        <a href="{% url 'Edrive:home' %}" class="home-link">
+             <img src = "{% get_media_prefix %}shinryoku.png"  alt = "ホーム">
+             <p>HOME</p>
+        </a>
+        </div>
         <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
         <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
       </nav>
-       {% block content %}{% endblock %}
+      </header>
+      {% block content %}{% endblock %}
 
-
+  <div class="records">
   <nav>
    <form method="POST">
    {% csrf_token %}
-   {{ form.as_p }}
+   <div class="form-group">
+                {{ form.created_at.label_tag }}
+                {{ form.created_at }}
+            </div>
+            <div class="form-group">
+                {{ form.distance.label_tag }}
+                {{ form.distance }}
+            </div>
+            <div class="form-group">
+                {{ form.fuel_amount.label_tag }}
+                {{ form.fuel_amount }}
+            </div>
    <input type="submit" value="保存">
         </form>
 
@@ -29,7 +50,8 @@
         {% endif %}
     <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
   </nav>
-<div class="container">
+  </div>
+<div class="records-container">
         <div class="car-info">
             <table border='1'>
       <table>
@@ -40,22 +62,24 @@
                 <th>走行距離(km)</th>
                 <th>給油量(L)</th>
                 <th>燃費量(km/L)</th>
-                <th>操作</th>
+                <th>削除</th>
             </tr>
                
         </thead>
             <tbody>
-            {% for records in fuel_records %}
+            {% for record in fuel_records %}
                 <tr>
                     <td>{{ record.id }}</td>
                     <td>{{ record.created_at }}</td>
                     <td>{{ record.distance }}km</td>
                     <td>{{ record.fuel_amount }}L</td>
                     <td>{{ record.fuel_efficiency|floatformat:1 }}km/L</td>
-             <form method ="post">
-               {% csrf_token %}
-                <button type="submit">削除</button>
-             </form>
+                    <td>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_record_id" value="{{ record.id }}">
+                        <button type="submit">削除</button>
+                      </form>
                     </td>
                 </tr>
                {% endfor %}
