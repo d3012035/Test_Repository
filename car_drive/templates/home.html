@@ -6,8 +6,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Home</title>
       <link rel="stylesheet" href="{% static 'css/style.css' %}">
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    </head>
+   
   
    <body>
        
@@ -31,8 +31,10 @@
       {% block content %}{% endblock %}
 
     <div class="achievement-info">
-    <div class="droplet"></div>
-    <p>あと{{ target_achievement_count }}回目標達成でレベルアップ</p>
+    <div class="shape"><img src = "{% get_media_prefix %}driver.png"  alt = "しずく">
+    <p class="achievement-text">あと{{ target_achievement_count }}回目標達成<br>でレベルアップ</p>
+    </div>
+    
     <p>現在のドライバーレベル<span class="current-level">{{ user.driver_level }}</span></p>
     </div>
 
@@ -50,41 +52,23 @@
           <div class="value">{{ record.fuel_efficiency|floatformat:1 }}km/L</div>
     {% endfor %}
    </div>
+   <div class="you">
+   <img src = "{% get_media_prefix %}you.png"  alt = "葉">
    </div>
+   <div class="graph-container">
+      <img src="data:image/png;base64,{{ graph_url }}" alt="Fuel Efficiency Graph">
+    </div>
+   </div>
+   <div class="you">
+   <img src = "{% get_media_prefix %}you.png"  alt = "葉">
+   </div>  
   <div class="nav-links">
     <a class="navbar-brand" href="{% url 'Edrive:records' user.pk %}">燃費入力</a>
     <a class="navbar-brand" href="{% url 'Edrive:target_fuelefficiency' user.pk %}">目標燃費量入力</a>
   </div>
 
-  <div id="chart-container">
-  <div style="width: 80%; margin: 0 auto;">
-        <canvas id="fuelChart"></canvas>
-    </div>
-    </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-        var ctx = document.getElementById('fuelChart').getContext('2d');
-        var fuelChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ labels|safe }},
-                datasets: [{
-                    label: '燃費量',
-                    data: {{ data|safe }},
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
+  
+</div>
 </body>
 </html>
    

@@ -44,7 +44,7 @@ class TargetFuelForm(forms.ModelForm):
         }
         
 class RecordsForm(forms.ModelForm):
-    created_at = forms.DateTimeField(label = '', widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
+    created_at = forms.DateTimeField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
     distance = forms.FloatField(label = '走行距離')
     fuel_amount = forms.FloatField(label = '給油量')
     

@@ -29,8 +29,6 @@
    <div class="target">
    <h4>{{ car_model.car_model_name }}の平均燃費量 {{ car_model.average_fuel_efficiency }} km/L</h4>
 <label for="target_fuel_efficiency">目標燃費量</label>
-<input type="text" id="target_fuel_efficiency" name="target_fuel_efficiency" />
-
    <nav>
         <form method="POST">
            {% csrf_token %}
@@ -42,14 +40,6 @@
         <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
         
    </nav>
-   <div class="user-car-models">
-        <h4>あなたの登録した車種と平均燃費量</h4>
-        <ul>
-            {% for my_car in user_cars %}
-                <li>{{ my_car.car_model.car_model_name }}: {{ my_car.car_model.average_fuel_efficiency }} km/L</li>
-            {% endfor %}
-        </ul>
-    </div>
    </div>
    </body>
 </html>

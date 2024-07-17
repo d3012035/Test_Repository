@@ -26,6 +26,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
+import matplotlib.pyplot as plt
+import io
+import base64
 
 Users = get_user_model()
 
@@ -96,6 +99,8 @@ class HomeView(LoginRequiredMixin,View):
         my_cars = MyCars.objects.filter(user=user_instance)
         fuel_records = FuelRecords.objects.filter(my_car__in=my_cars)
         
+        target_efficiency_data = []
+        achieved_efficiency_data = []
         
           
         
@@ -115,12 +120,71 @@ class HomeView(LoginRequiredMixin,View):
         #else:
         #    my_cars = []
         #    fuel_records = []
+        
+        for record in fuel_records:
+            target_efficiency_data.append(record.my_car.target_fuel_efficiency)
+            achieved_efficiency_data.append(record.fuel_efficiency)
+        
+        # ハイブリッド車とガソリン車の平均燃費量を計算する
+        hybrid_efficiency_data = {
+            'AQUA': 27.5,
+            'ALPHARD': 16.68,
+            'RAIZE': 25.16,
+            'FREED': 18.9,
+            'VEZEL': 20.65,
+            'Rocky': 27.0,
+            'NOTE': 23.7,
+            'SERENA': 17.3,
+            'DAYZ': 16.76,
+            'X-TRAIL': 15.18,
+        }
+        
+        gasoline_efficiency_data = {
+            'AQUA': 26.8,
+            'ROOMY': 26.8,
+            'ALPHARD': 17.4,
+            'RAIZE': 27.0,
+            'N-BOX': 27.8,
+            'FREED': 24.5,
+            'VEZEL': 24.8,
+            'CANBUS': 27.9,
+            'Tanto': 27.7,
+            'Rocky': 27.0,
+            'NOTE': 25.9,
+            'SERENA': 21.1,
+            'DAYZ': 28.1,
+            'X-TRAIL': 21.5,
+        }
+        plt.switch_backend('Agg')  # バックエンドを変更
+        fig, ax = plt.subplots()
 
+        ax.plot(target_efficiency_data, label='Target Efficiency')
+        ax.plot(achieved_efficiency_data, label='Achieved Efficiency')
+
+        ax.set_xlabel('Record Index')
+        ax.set_ylabel('Fuel Efficiency (km/L)')
+        ax.set_title('Fuel Efficiency Over Time')
+        ax.legend()
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        graph_url = base64.b64encode(buf.getvalue()).decode('utf-8')
+        buf.close()
+
+        #て保存し、Base64エンコードする
+           
+        
         context = {
             'user': user_instance,
             'my_cars': my_cars,
             'fuel_records': fuel_records,
             'target_achievement_count': target_achievement_count,
+            'target_efficiency_data': target_efficiency_data,
+            'achieved_efficiency_data': achieved_efficiency_data,
+            'hybrid_efficiency_data': hybrid_efficiency_data,
+            'gasoline_efficiency_data': gasoline_efficiency_data,
+            'graph_url': graph_url,
         }
 
         return render(request, self.template_name, context)
