@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Manufacturers, CarModels,MyCars, FuelRecords, EcoDriveSites
+from .models import Manufacturer, CarModel,MyCar, FuelRecord, EcoDriveSite
 from .models import User
 
-admin.site.register(Manufacturers)
-admin.site.register(CarModels)
-admin.site.register(MyCars)
-admin.site.register(FuelRecords)
-admin.site.register(EcoDriveSites)
+admin.site.register(Manufacturer)
+admin.site.register(CarModel)
+admin.site.register(MyCar)
+admin.site.register(FuelRecord)
+admin.site.register(EcoDriveSite)
 admin.site.register(User)
 
 
@@ -17,8 +17,8 @@ class CarModelsAdmin(admin.ModelAdmin):
 
 # Register your models here.
 try:
-    admin.site.unregister(CarModels)
+    admin.site.unregister(CarModel)
 except admin.sites.NotRegistered:
     pass
 
-admin.site.register(CarModels, CarModelsAdmin)
+admin.site.register(CarModel, CarModelsAdmin)

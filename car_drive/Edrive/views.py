@@ -17,9 +17,9 @@ from .forms import TargetFuelForm
 from .forms import RecordsForm
 from .forms import MyCarDetailForm, MyCarDeForm
 from .forms import MyPageEditForm, MyCarsForm
-from .models import User, MyCars, FuelRecords
-from .models import CarModels, Manufacturers
-from .models import FuelRecords
+from .models import User, MyCar
+from .models import CarModel, Manufacturer
+from .models import FuelRecord
 from django.urls import reverse_lazy
 from django.http import Http404
 from django.contrib.auth import get_user_model
@@ -29,6 +29,8 @@ from django.contrib.auth import get_user_model
 import matplotlib.pyplot as plt
 import io
 import base64
+from django.http import HttpResponseNotFound
+
 
 Users = get_user_model()
 
@@ -96,11 +98,12 @@ class HomeView(LoginRequiredMixin,View):
             return render(request, self.template_name)
         
         
-        my_cars = MyCars.objects.filter(user=user_instance)
-        fuel_records = FuelRecords.objects.filter(my_car__in=my_cars)
+        my_cars = MyCar.objects.filter(user=user_instance)
+        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars).order_by('created_at')
         
         target_efficiency_data = []
         achieved_efficiency_data = []
+        dates = []
         
           
         
@@ -124,8 +127,17 @@ class HomeView(LoginRequiredMixin,View):
         for record in fuel_records:
             target_efficiency_data.append(record.my_car.target_fuel_efficiency)
             achieved_efficiency_data.append(record.fuel_efficiency)
-        
-        # ハイブリッド車とガソリン車の平均燃費量を計算する
+            dates.append(record.created_at)
+            
+            
+            
+        car_group = {
+            'AQUA': 'コンパクトカー', 'ROOMY': 'コンパクトカー', 'NOTE': 'コンパクトカー',
+            'ALPHARD': 'ミニバン', 'FREED': 'ミニバン', 'SERENA': 'ミニバン',
+            'RAIZE': 'SUV', 'VEZEL': 'SUV', 'X-TRAIL': 'SUV', 'Rocky': 'SUV',
+            'N-BOX': '軽自動車', 'CANBUS': '軽自動車', 'Tanto': '軽自動車', 'DAYZ': '軽自動車'
+        }
+            
         hybrid_efficiency_data = {
             'AQUA': 27.5,
             'ALPHARD': 16.68,
@@ -138,7 +150,7 @@ class HomeView(LoginRequiredMixin,View):
             'DAYZ': 16.76,
             'X-TRAIL': 15.18,
         }
-        
+
         gasoline_efficiency_data = {
             'AQUA': 26.8,
             'ROOMY': 26.8,
@@ -155,13 +167,35 @@ class HomeView(LoginRequiredMixin,View):
             'DAYZ': 28.1,
             'X-TRAIL': 21.5,
         }
+        
+            
+        car_models = CarModel.objects.all()
+        average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
+
+        
+
+                
         plt.switch_backend('Agg')  # バックエンドを変更
         fig, ax = plt.subplots()
+        
+        ax.plot( dates,target_efficiency_data, label='Target Efficiency')
+        ax.plot(dates, achieved_efficiency_data, label='Achieved Efficiency')
+        
+        registered_groups = set(car_group[car.car_model.car_model_name] for car in my_cars)
+        
+        for model, efficiency in hybrid_efficiency_data.items():
+            car_model = car_group.get(model)
+            if car_model and car_model in registered_groups:
+                ax.axhline(y=efficiency, color='green', linestyle='--', label=f'Hybrid {model} Efficiency')
 
-        ax.plot(target_efficiency_data, label='Target Efficiency')
-        ax.plot(achieved_efficiency_data, label='Achieved Efficiency')
 
-        ax.set_xlabel('Record Index')
+        for model, efficiency in gasoline_efficiency_data.items():
+            car_model = car_group.get(model)
+            if car_model and car_model in registered_groups:
+                ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'Gasoline {model} Efficiency')
+
+        
+        ax.set_xlabel('Date')
         ax.set_ylabel('Fuel Efficiency (km/L)')
         ax.set_title('Fuel Efficiency Over Time')
         ax.legend()
@@ -200,7 +234,7 @@ class  MyCarView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         user = request.user
         user_instance = Users.objects.get(email=user.email)
-        my_car = MyCars.objects.filter(user=user_instance).first()
+        my_car = MyCar.objects.filter(user=user_instance).first()
         
         context = {
              'user':user_instance,
@@ -209,36 +243,44 @@ class  MyCarView(LoginRequiredMixin,View):
         return render(request, self.template_name, context)
     
     
-class RecordsView(UpdateView, DetailView):
-    model = FuelRecords
-    #records = FuelRecords.objects.all()
+class RecordsView(LoginRequiredMixin, View):
     template_name = 'records.html'
-    form_class = RecordsForm
+   
         
     def get(self, request, pk):
-        my_cars = get_object_or_404(MyCars, id=pk)
-        fuel_records = FuelRecords.objects.filter(my_car=my_cars)
-        form = RecordsForm()
-        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
+        try:
+         my_car = MyCar.objects.get(id=pk, user=request.user)
+         fuel_records = FuelRecord.objects.filter(my_car=my_car)
+         form = RecordsForm()
+         return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
+        except MyCar.DoesNotExist:
+            # MyCarsが存在しない場合の処理をここに記述
+
+            return render(request, self.template_name, {'car_not_found': True})
 
     def post(self, request, pk):
-        if 'delete_record_id' in request.POST:
-            record_id = request.POST['delete_record_id']
-            FuelRecords.objects.filter(id=record_id).delete()
+        try:
+            my_car = MyCar.objects.get(id=pk, user=request.user)
+            if 'delete_record_id' in request.POST:
+              record_id = request.POST['delete_record_id']
+              FuelRecord.objects.filter(id=record_id).delete()
          #POSTデータからフォーム入力を取得
-        else:
-         distance = float(request.POST['distance'])
-         fuel_amount = float(request.POST['fuel_amount'])
-         fuel_efficiency = float(distance) / float(fuel_amount)
-         my_cars = get_object_or_404(MyCars, id=pk)
-         FuelRecords.objects.create(
-            my_car=my_cars,
-            distance=distance,
-            fuel_amount=fuel_amount,
-            fuel_efficiency=fuel_efficiency
+            else:
+                form = RecordsForm(request.POST)
+                if form.is_valid():
+                  distance = float(request.POST['distance'])
+                  fuel_amount = float(request.POST['fuel_amount'])
+                  fuel_efficiency = float(distance) / float(fuel_amount)
+                  FuelRecord.objects.create(
+                my_car=my_car,
+                distance=distance,
+                fuel_amount=fuel_amount,
+                fuel_efficiency=fuel_efficiency
         )
          # 燃費記録の表示ページにリダイレクト
-        return redirect('Edrive:records', pk=pk)
+            return redirect('Edrive:records', pk=pk)
+        except MyCar.DoesNotExist:
+             return render(request, self.template_name, {'car_not_found': True})
     
 class TargetFuelView(LoginRequiredMixin, UpdateView):
     #model = MyCars
@@ -246,37 +288,60 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
     #context_object_name = 'my_car'
      
     def get(self, request, pk):
-        car_model = CarModels.objects.get(pk=pk)
+        car_model = get_object_or_404(CarModel, pk=pk)
         average_fuel_efficiency = car_model.average_fuel_efficiency
         # ここで平均燃費量を取得する属性を確認してください
-        my_car = MyCars.objects.get(car_model=car_model, user=request.user)  # MyCarsモデルから対象の車両を取得
+        my_car = MyCar.objects.filter(car_model_id=pk, user=request.user).first()
+        
+        if my_car:
+            form = TargetFuelForm(instance=my_car)
+        else:
+            form = TargetFuelForm()
+        
         form = TargetFuelForm(instance=my_car) 
-        user_cars = MyCars.objects.filter(user=request.user).select_related('car_model')
+        user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
+        
+        car_models = CarModel.objects.all()
+
         context = {
             'car_model': car_model,
             'average_fuel_efficiency': average_fuel_efficiency,
             'form':form,
             'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
+            'car_models': car_models,
         }
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        car_model = CarModels.objects.get(pk=pk)
-        my_car = MyCars.objects.get(car_model=car_model, user=request.user)
-        form = TargetFuelForm(request.POST, instance=my_car)
+        car_model = get_object_or_404(CarModel, pk=pk)
+        my_car = MyCar.objects.filter(car_model_id=pk, user=request.user).first()
+        
+        if my_car:
+            form = TargetFuelForm(request.POST, instance=my_car)
+        else:
+            # 新しいレコードを作成する場合
+            form = TargetFuelForm(request.POST)
+            if form.is_valid():
+                new_my_car = form.save(commit=False)
+                new_my_car.user = request.user
+                new_my_car.car_model = car_model
+                new_my_car.save()
+                return redirect('Edrive:home')
         
         if form.is_valid():
             form.save()  # フォームの内容を保存
             return redirect('Edrive:home')  # ホーム画面にリダイレクト
         # フォームが無効な場合は再度フォームとデータをレンダリング
-        car_model = CarModels.objects.get(pk=pk)
         average_fuel_efficiency = car_model.average_fuel_efficiency  # 平均燃費量を取得
-        user_cars = MyCars.objects.filter(user=request.user).select_related('car_model') 
+        user_cars = MyCar.objects.filter(user=request.user).select_related('car_model') 
+        
+        car_models = CarModel.objects.all()
         context = {
             'car_model': car_model,
             'average_fuel_efficiency': average_fuel_efficiency,
             'form': form,
             'user_cars': user_cars,
+            'car_models': car_models,  
         }
         return render(request, self.template_name, context)
 
@@ -299,7 +364,7 @@ class MyCarDetailView(View):
     
     def get(self, request, *args,**kwargs):
         user = self.get_object()
-        mycars_instance = MyCars.objects.filter(user=user).first()
+        mycars_instance = MyCar.objects.filter(user=user).first()
         
         if mycars_instance:
             car_model = mycars_instance.car_model      
@@ -314,7 +379,7 @@ class MyCarDetailView(View):
     
     def post(self, request, *args, **kwargs):
         user = self.get_object()
-        mycars_instance = MyCars.objects.filter(user=user).first()
+        mycars_instance = MyCar.objects.filter(user=user).first()
         
         if mycars_instance:
             car_model_instance = mycars_instance.car_model
@@ -343,7 +408,7 @@ class MyPageView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         user = request.user
         user_instance = Users.objects.get(email=user.email)
-        my_car = MyCars.objects.filter(user=user_instance).first()
+        my_car = MyCar.objects.filter(user=user_instance).first()
         
         context = {
              'user':user_instance,
@@ -365,8 +430,8 @@ class MyPageEditView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        car_model=CarModels.objects.first()
-        mycars_instance, created = MyCars.objects.get_or_create(user=user, car_model=car_model)
+        car_model=CarModel.objects.first()
+        mycars_instance, created = MyCar.objects.get_or_create(user=user, car_model=car_model)
             
         form1 = MyPageEditForm(instance=user)
         form2 = MyCarsForm(instance=mycars_instance)

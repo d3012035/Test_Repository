@@ -69,20 +69,63 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
 
 
         
-class Manufacturers(BaseModel):
+class Manufacturer(BaseModel):
+    MANUFACTURER_CHOICES = [
+        ('toyota', 'トヨタ'),
+        ('honda', 'ホンダ'),
+        ('daihatsu', 'ダイハツ'),
+        ('nissan', 'ニッサン'),
+    ]
+    
     name = models.CharField(max_length=1000, default='default_name')
-    manufacturer_name = models.CharField(max_length=70)
+    manufacturer_name = models.CharField(max_length=70, choices=MANUFACTURER_CHOICES)
     
     class Meta:
         db_table = 'manufacturers'
         
     
-class CarModels(BaseModel):
+class CarModel(BaseModel):
+    CarModel_CHOICES = [
+        ('AQUA', 'アクア'),
+        ('ROOMY','ルーミー'),
+        ('ALPHARD','アルファード'),
+        ('RAIZE', 'ライズ'),
+        ('N-BOX','エヌボックス'),
+        ('FREED','フリード'),
+        ('VEZEL', 'ヴェゼル'),
+        ('CANBUS', 'ムーヴキャンバス'),
+        ('Tanto','タント'),
+        ('Rocky', 'ロッキー'),
+        ('NOTE', 'ノート'),
+        ('SERENA','セレナ'),
+        ('DAYZ','デイズ'),
+        ('X-TRAIL', 'エクストレイル'),
+    ]
+
+    EngineType_CHOICES = [
+        ('gasoline', 'ガソリン'),
+        ('hybrid', 'ハイブリッド'),
+        ('other', 'その他'),
+    ]
+
+    Color_CHOICES = [ 
+        ('red', 'レッド'),
+        ('blue','ブルー'),
+        ('white','ホワイト'),
+        ('yellow', 'イエロー'),
+        ('pink', 'ピンク'),
+        ('green', 'グリーン'),
+        ('black', 'ブラック'),
+        ('purple', 'パープル'),
+        ('grey', 'グレー'),
+        ('brown', 'ブラウン'),
+    ]
+
     name = models.CharField(max_length=1000, default='default_name')
-    manufacturer = models.ForeignKey(Manufacturers, on_delete=models.CASCADE, null=True, )
-    car_model_name = models.CharField(max_length=120)
-    engine_type = models.CharField(max_length=50)
-    color = models.CharField(max_length=150)
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE, null=True)
+    car_model_name = models.CharField(max_length=120, choices=CarModel_CHOICES)
+    engine_type = models.CharField(max_length=50, choices=EngineType_CHOICES)
+    color = models.CharField(max_length=150, choices=Color_CHOICES)
     average_fuel_efficiency = models.FloatField(null=True, default=None)
     car_group = models.CharField(max_length=200, null=True, default=None)
     
@@ -90,10 +133,10 @@ class CarModels(BaseModel):
         db_table = 'car_models'
     
     
-class MyCars(BaseModel):
+class MyCar(BaseModel):
     name = models.CharField(max_length=1000, default='default_name')
     user = models.ForeignKey(User, related_name='mycars', on_delete=models.CASCADE)
-    car_model = models.ForeignKey(CarModels, on_delete=models.CASCADE,null=True)
+    car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE,null=True)
     purchase_on = models.DateField(null=True)
     next_oil_change_on = models.DateField(null=True)
     next_inspection_on = models.DateField(null=True)
@@ -104,8 +147,8 @@ class MyCars(BaseModel):
         db_table = 'my_cars'
     
         
-class FuelRecords(BaseModel):
-    my_car = models.ForeignKey(MyCars, on_delete=models.CASCADE, default=1)
+class FuelRecord(BaseModel):
+    my_car = models.ForeignKey(MyCar, on_delete=models.CASCADE, default=1)
     distance = models.FloatField(verbose_name="走行距離 (km)")
     fuel_amount = models.FloatField(verbose_name="給油量 (L)")
     fuel_efficiency = models.FloatField(verbose_name="燃費 (km/L)", blank=True, null=True, editable=False)
@@ -121,7 +164,7 @@ class FuelRecords(BaseModel):
     class Meta:
         db_table = 'fuel_records'
         
-class EcoDriveSites(BaseModel):
+class EcoDriveSite(BaseModel):
     ecodrive_url = models.CharField(max_length=260)
     site_title = models.CharField(max_length=200)
     

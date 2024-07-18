@@ -1,5 +1,5 @@
 from django import forms
-from .models import  MyCars, FuelRecords, User, CarModels, Manufacturers
+from .models import  MyCar, FuelRecord, User, CarModel, Manufacturer
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -34,7 +34,7 @@ class TargetFuelForm(forms.ModelForm):
     target_fuel_efficiency = forms.FloatField(label = '')
 
     class Meta:
-        model = MyCars
+        model = MyCar
         fields = ['target_fuel_efficiency']
         labels = {
             'target_fuel_efficiency':'目標燃費量(km/L)',
@@ -51,7 +51,7 @@ class RecordsForm(forms.ModelForm):
     
     
     class Meta:
-        model = FuelRecords
+        model = FuelRecord
         fields = [ 'distance', 'fuel_amount']
         
 class MyCarDetailForm(forms.ModelForm):
@@ -128,7 +128,7 @@ class MyCarDetailForm(forms.ModelForm):
         )
     
     class Meta:
-        model = CarModels
+        model = CarModel
         fields = [ 'manufacturer_name', 'car_model_name', 'engine_type', 'color' ]
         
     def __init__(self, *args, **kwargs):
@@ -139,7 +139,7 @@ class MyCarDetailForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super(MyCarDetailForm, self).save(commit=False)
         manufacturer_name = self.cleaned_data['manufacturer_name']
-        manufacturer, created = Manufacturers.objects.get_or_create(manufacturer_name=manufacturer_name)
+        manufacturer, created = Manufacturer.objects.get_or_create(manufacturer_name=manufacturer_name)
         instance.manufacturer = manufacturer
         if commit:
             instance.save()
@@ -149,7 +149,7 @@ class MyCarDeForm(forms.ModelForm):
     purchase_on = forms.DateField(label = '購入年月', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
     
     class Meta:
-        model = MyCars
+        model = MyCar
         fields = ['purchase_on']
             
 class MyPageEditForm(forms.ModelForm):
@@ -166,7 +166,7 @@ class MyCarsForm(forms.ModelForm):
     next_inspection_on = forms.DateField(label='車検', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
 
     class Meta:
-        model = MyCars
+        model = MyCar
         fields = ['next_oil_change_on', 'next_inspection_on']
         
 
