@@ -42,14 +42,18 @@
         <div class="target-achievement">
             <h4>目標燃費量</h4>
     {% for my_car in my_cars %}
+       {% if my_car.target_fuel_efficiency %}
          <div class="value">{{ my_car.target_fuel_efficiency }}km/L</div>
+         {% endif %}
     {% endfor %}
 
     </div>
         <div class="actual-achievement">
             <h4>実績燃費量</h4>
     {% for record in fuel_records %}
+         {% if record.fuel_efficiency %}
           <div class="value">{{ record.fuel_efficiency|floatformat:1 }}km/L</div>
+          {% endif %}
     {% endfor %}
    </div>
    <div class="you">

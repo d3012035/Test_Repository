@@ -63,22 +63,6 @@ class UserLoginView(FormView):
         if next_url:
              return redirect(next_url)
         return redirect('Edrive:home')
-    #def form_valid(self, form):
-    #    email = form.cleaned_data.get('email')
-    #    password = form.cleaned_data.get('password')
-    #    try:
-    #        user = User.objects.get(email=email)
-    #        if user.check_password(password):
-    #            login(self.request, user)
-    #            return HttpResponseRedirect(self.get_success_url())
-    #        else:
-    #            return self.form_invalid(form)
-    #    except User.DoesNotExist:
-    #        return self.form_invalid(form)
-
-    #def get_success_url(self):
-    #    return reverse_lazy('home')
-    
 
     
 class HomeView(LoginRequiredMixin,View):
@@ -99,7 +83,7 @@ class HomeView(LoginRequiredMixin,View):
         
         
         my_cars = MyCar.objects.filter(user=user_instance)
-        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars).order_by('created_at')
+        fuel_records = FuelRecord.objects.filter(fuel_efficiency__isnull=False).order_by('created_at')
         
         target_efficiency_data = []
         achieved_efficiency_data = []
@@ -181,7 +165,11 @@ class HomeView(LoginRequiredMixin,View):
         ax.plot( dates,target_efficiency_data, label='Target Efficiency')
         ax.plot(dates, achieved_efficiency_data, label='Achieved Efficiency')
         
-        registered_groups = set(car_group[car.car_model.car_model_name] for car in my_cars)
+        registered_groups = set(
+            car_group.get(car.car_model.car_model_name, 'Default Value') 
+            for car in my_cars 
+            if car.car_model is not None
+        )
         
         for model, efficiency in hybrid_efficiency_data.items():
             car_model = car_group.get(model)
@@ -243,44 +231,43 @@ class  MyCarView(LoginRequiredMixin,View):
         return render(request, self.template_name, context)
     
     
-class RecordsView(LoginRequiredMixin, View):
+class RecordsView(View):
+    model = FuelRecord
     template_name = 'records.html'
+    form_class = RecordsForm
    
         
     def get(self, request, pk):
-        try:
-         my_car = MyCar.objects.get(id=pk, user=request.user)
-         fuel_records = FuelRecord.objects.filter(my_car=my_car)
-         form = RecordsForm()
-         return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
-        except MyCar.DoesNotExist:
-            # MyCarsが存在しない場合の処理をここに記述
 
-            return render(request, self.template_name, {'car_not_found': True})
-
+        fuel_records = FuelRecord.objects.all()
+        
+        # 空の QuerySet
+            
+        form = self.form_class()
+        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
+        
     def post(self, request, pk):
-        try:
-            my_car = MyCar.objects.get(id=pk, user=request.user)
-            if 'delete_record_id' in request.POST:
+        
+        form = self.form_class(request.POST)
+        
+        if 'delete_record_id' in request.POST:
               record_id = request.POST['delete_record_id']
               FuelRecord.objects.filter(id=record_id).delete()
          #POSTデータからフォーム入力を取得
-            else:
-                form = RecordsForm(request.POST)
-                if form.is_valid():
+        
+        form = RecordsForm(request.POST)
+        if form.is_valid():
                   distance = float(request.POST['distance'])
                   fuel_amount = float(request.POST['fuel_amount'])
                   fuel_efficiency = float(distance) / float(fuel_amount)
                   FuelRecord.objects.create(
-                my_car=my_car,
-                distance=distance,
-                fuel_amount=fuel_amount,
-                fuel_efficiency=fuel_efficiency
-        )
+                    distance=distance,
+                    fuel_amount=fuel_amount,
+                    fuel_efficiency=fuel_efficiency
+                )
          # 燃費記録の表示ページにリダイレクト
-            return redirect('Edrive:records', pk=pk)
-        except MyCar.DoesNotExist:
-             return render(request, self.template_name, {'car_not_found': True})
+        return redirect('Edrive:records', pk=pk)
+        
     
 class TargetFuelView(LoginRequiredMixin, UpdateView):
     #model = MyCars
