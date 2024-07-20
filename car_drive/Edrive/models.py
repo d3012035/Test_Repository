@@ -126,7 +126,7 @@ class CarModel(BaseModel):
     car_model_name = models.CharField(max_length=120, choices=CarModel_CHOICES)
     engine_type = models.CharField(max_length=50, choices=EngineType_CHOICES)
     color = models.CharField(max_length=150, choices=Color_CHOICES)
-    average_fuel_efficiency = models.FloatField(null=True, default=None)
+    average_fuel_efficiency = models.FloatField(null=True, blank=True)
     car_group = models.CharField(max_length=200, null=True, default=None)
     
     class Meta:

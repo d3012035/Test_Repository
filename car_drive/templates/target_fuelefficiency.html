@@ -28,7 +28,9 @@
    
    <div class="target">
    {% for car_model in car_models %}
+   {% if car_model.average_fuel_efficiency is not None %}
    <h4>{{ car_model.car_model_name }}の平均燃費量 {{ car_model.average_fuel_efficiency }} km/L</h4>
+   {% endif %}
    {% endfor %}
 <label for="target_fuel_efficiency">目標燃費量</label>
    <nav>

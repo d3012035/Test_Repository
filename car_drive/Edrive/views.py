@@ -30,9 +30,18 @@ import matplotlib.pyplot as plt
 import io
 import base64
 from django.http import HttpResponseNotFound
+import matplotlib.font_manager as fm
+
+
 
 
 Users = get_user_model()
+
+class PortfolioView(View):
+    def get(self, request, *args, **kwargs):
+        
+        return render(request,'portfolio.html')
+
 
 class RegistUserView(CreateView):
     template_name = 'regist.html'
@@ -157,13 +166,15 @@ class HomeView(LoginRequiredMixin,View):
         average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
 
         
-
+        font_path = 'C:\\Windows\\Fonts\\YuGothL.ttc'  # 游ゴシック
+        font_prop = fm.FontProperties(fname=font_path)
+        plt.rcParams['font.family'] = font_prop.get_name()
                 
         plt.switch_backend('Agg')  # バックエンドを変更
         fig, ax = plt.subplots()
         
-        ax.plot( dates,target_efficiency_data, label='Target Efficiency')
-        ax.plot(dates, achieved_efficiency_data, label='Achieved Efficiency')
+        ax.plot( dates,target_efficiency_data, label='目標燃費')
+        ax.plot(dates, achieved_efficiency_data, label='実績燃費')
         
         registered_groups = set(
             car_group.get(car.car_model.car_model_name, 'Default Value') 
@@ -174,18 +185,18 @@ class HomeView(LoginRequiredMixin,View):
         for model, efficiency in hybrid_efficiency_data.items():
             car_model = car_group.get(model)
             if car_model and car_model in registered_groups:
-                ax.axhline(y=efficiency, color='green', linestyle='--', label=f'Hybrid {model} Efficiency')
+                ax.axhline(y=efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
 
 
         for model, efficiency in gasoline_efficiency_data.items():
             car_model = car_group.get(model)
             if car_model and car_model in registered_groups:
-                ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'Gasoline {model} Efficiency')
+                ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
 
         
-        ax.set_xlabel('Date')
-        ax.set_ylabel('Fuel Efficiency (km/L)')
-        ax.set_title('Fuel Efficiency Over Time')
+        ax.set_xlabel('日付')
+        ax.set_ylabel('燃費 (km/L)')
+        ax.set_title('燃費量')
         ax.legend()
 
         buf = io.BytesIO()
@@ -285,7 +296,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         else:
             form = TargetFuelForm()
         
-        form = TargetFuelForm(instance=my_car) 
+        
         user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
         
         car_models = CarModel.objects.all()
@@ -295,7 +306,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             'average_fuel_efficiency': average_fuel_efficiency,
             'form':form,
             'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
-            'car_models': car_models,
+            'car_models':car_models,
         }
         return render(request, self.template_name, context)
 

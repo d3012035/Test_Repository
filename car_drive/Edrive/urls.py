@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     UserView, UserLoginView, RegistUserView, HomeView,RecordsView,
-    TargetFuelView, MyCarView,  MyPageView, MyPageEditView, EcoCarSiteView, MyCarDetailView,
+    TargetFuelView, MyCarView,  MyPageView, MyPageEditView, EcoCarSiteView, MyCarDetailView, PortfolioView,
 )
 app_name = 'Edrive'
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path('mypage/<int:pk>',MyPageView.as_view(), name = 'mypage'),
     path('mypage_edit/<int:pk>',MyPageEditView.as_view(), name = 'mypage_edit'),
     path('eco_car_site/',EcoCarSiteView.as_view(), name = 'eco_car_site'),
+    path('portfolio/',PortfolioView.as_view(), name = 'portfolio'),
 ]
