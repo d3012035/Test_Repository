@@ -37,10 +37,9 @@ import matplotlib.font_manager as fm
 
 Users = get_user_model()
 
-class PortfolioView(View):
-    def get(self, request, *args, **kwargs):
-        
-        return render(request,'portfolio.html')
+class PortfolioView(TemplateView):
+    template_name = 'portfolio.html'
+    
 
 
 class RegistUserView(CreateView):
