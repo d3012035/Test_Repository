@@ -18,4 +18,5 @@ urlpatterns = [
     path('mypage_edit/<int:pk>',MyPageEditView.as_view(), name = 'mypage_edit'),
     path('eco_car_site/',EcoCarSiteView.as_view(), name = 'eco_car_site'),
     path('portfolio/',PortfolioView.as_view(), name = 'portfolio'),
+    path('', PortfolioView.as_view(), name='root_portfolio'),  # ルート URL にアクセス時に PortfolioView を表示
 ]

@@ -63,7 +63,7 @@ ROOT_URLCONF = 'car_drive.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [os.path.join(BASE_DIR, 'car_drive', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
