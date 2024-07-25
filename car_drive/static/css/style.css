@@ -915,8 +915,8 @@ input[type="submit"]:hover {
 }
 .achievement-text {
     position: absolute;
-    top: 40%; /* 上端から50%の位置に配置 */
-    left: 71%; /* 左端から50%の位置に配置 */
+    margin-top: 40%; /* 上端から50%の位置に配置 */
+    margin-left: 71%; /* 左端から50%の位置に配置 */
     transform: translate(-50%, -50%); /* 中央に揃える */
     color: black; /* テキストの色 */
     font-size: 16px;

@@ -30,6 +30,7 @@ import matplotlib.pyplot as plt
 import io
 import base64
 from django.http import HttpResponseNotFound
+from matplotlib.font_manager import FontProperties
 import matplotlib.font_manager as fm
 
 
@@ -90,8 +91,8 @@ class HomeView(LoginRequiredMixin,View):
             return render(request, self.template_name)
         
         
-        my_cars = MyCar.objects.filter(user=user_instance)
-        fuel_records = FuelRecord.objects.filter(fuel_efficiency__isnull=False).order_by('created_at')
+        my_cars = MyCar.objects.filter(user=user_instance)if MyCar.objects.filter(user=user_instance).exists() else []
+        fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('created_at') if FuelRecord.objects.filter(my_car__user=user_instance).exists() else []
         
         target_efficiency_data = []
         achieved_efficiency_data = []
@@ -102,6 +103,7 @@ class HomeView(LoginRequiredMixin,View):
         target_achievement_count = user_instance.target_achievement_count
 
         for record in fuel_records:
+            if record.fuel_efficiency is not None and record.my_car.target_fuel_efficiency is not None:
               if record.fuel_efficiency >= record.my_car.target_fuel_efficiency:
                 target_achievement_count += 1
 
@@ -165,9 +167,7 @@ class HomeView(LoginRequiredMixin,View):
         average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
 
         
-        font_path = 'C:\\Windows\\Fonts\\YuGothL.ttc'  # 游ゴシック
-        font_prop = fm.FontProperties(fname=font_path)
-        plt.rcParams['font.family'] = font_prop.get_name()
+        font_family = 'IPAexGothic'
                 
         plt.switch_backend('Agg')  # バックエンドを変更
         fig, ax = plt.subplots()
@@ -193,10 +193,10 @@ class HomeView(LoginRequiredMixin,View):
                 ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
 
         
-        ax.set_xlabel('日付')
-        ax.set_ylabel('燃費 (km/L)')
-        ax.set_title('燃費量')
-        ax.legend()
+        ax.set_xlabel('日付', family=font_family, fontsize=9)
+        ax.set_ylabel('燃費 (km/L)', family=font_family, fontsize=11)
+        ax.set_title('燃費量',family=font_family)
+        ax.legend(prop={'family': font_family})
 
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
@@ -231,7 +231,13 @@ class  MyCarView(LoginRequiredMixin,View):
     
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_instance = Users.objects.get(email=user.email)
+        try:
+            user_instance = Users.objects.get(email=user.email)
+        except Users.DoesNotExist:
+            user_instance = None
+
+        if user_instance is None:
+            return render(request, self.template_name)
         my_car = MyCar.objects.filter(user=user_instance).first()
         
         context = {
@@ -249,34 +255,43 @@ class RecordsView(View):
         
     def get(self, request, pk):
 
-        fuel_records = FuelRecord.objects.all()
-        
-        # 空の QuerySet
+        user = get_object_or_404(User, pk=pk)
+        # ユーザーに関連する FuelRecord を取得
+        my_cars = MyCar.objects.filter(user=user)
+        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
             
         form = self.form_class()
         return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
         
     def post(self, request, pk):
         
-        form = self.form_class(request.POST)
+        user = get_object_or_404(User, pk=pk)
+
+        my_cars = MyCar.objects.filter(user=user)
         
         if 'delete_record_id' in request.POST:
               record_id = request.POST['delete_record_id']
-              FuelRecord.objects.filter(id=record_id).delete()
+              FuelRecord.objects.filter(id=record_id,my_car__in=my_cars).delete()
          #POSTデータからフォーム入力を取得
         
-        form = RecordsForm(request.POST)
+        form = self.form_class(request.POST)
         if form.is_valid():
                   distance = float(request.POST['distance'])
                   fuel_amount = float(request.POST['fuel_amount'])
                   fuel_efficiency = float(distance) / float(fuel_amount)
-                  FuelRecord.objects.create(
+                  my_car = my_cars.first()
+                  if my_car:
+                    FuelRecord.objects.create(
+                    my_car=my_car,    
                     distance=distance,
                     fuel_amount=fuel_amount,
                     fuel_efficiency=fuel_efficiency
                 )
          # 燃費記録の表示ページにリダイレクト
         return redirect('Edrive:records', pk=pk)
+    
+        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
+        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
         
     
 class TargetFuelView(LoginRequiredMixin, UpdateView):
@@ -360,7 +375,10 @@ class MyCarDetailView(View):
     #success_url = reverse_lazy('Edrive:my_car')
     
     def get(self, request, *args,**kwargs):
-        user = self.get_object()
+         # URL のパラメータから pk を取得
+        pk = kwargs.get('pk')
+        # pk でユーザーを取得
+        user = get_object_or_404(User, pk=pk)
         mycars_instance = MyCar.objects.filter(user=user).first()
         
         if mycars_instance:
@@ -371,11 +389,20 @@ class MyCarDetailView(View):
             form1 = MyCarDetailForm()
             form2 = MyCarDeForm()
             
-        return render(request, self.template_name,{'form1': form1, 'form2': form2, 'mycars_instance': mycars_instance})
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'mycars_instance': mycars_instance
+        }    
+            
+        return render(request, self.template_name,context)
         
     
     def post(self, request, *args, **kwargs):
-        user = self.get_object()
+         # URL のパラメータから pk を取得
+        pk = kwargs.get('pk')
+        # pk でユーザーを取得
+        user = get_object_or_404(User, pk=pk)
         mycars_instance = MyCar.objects.filter(user=user).first()
         
         if mycars_instance:
@@ -394,11 +421,13 @@ class MyCarDetailView(View):
             mycars_instance.save()
             return redirect(reverse_lazy('Edrive:my_car', kwargs={'pk':user.pk}))  
         
-        return render(request, self.template_name,{'form1': form1, 'form2': form2, 'mycars_instance': mycars_instance})
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'mycars_instance': mycars_instance
+        }
+        return render(request, self.template_name,context)
  
-    def get_object(self):
-        return User.objects.get(pk=self.kwargs['pk'])
-     
     
 class MyPageView(LoginRequiredMixin,View):
     template_name = 'mypage.html'
