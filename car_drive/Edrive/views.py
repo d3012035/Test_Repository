@@ -5,7 +5,7 @@ from django.views.generic.base import (
     View, TemplateView
 )
 from . import forms
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 
@@ -73,6 +73,8 @@ class UserLoginView(FormView):
              return redirect(next_url)
         return redirect('Edrive:home')
 
+class UserLogoutView(LogoutView):
+          next_page =  '/Edrive/login'
     
 class HomeView(LoginRequiredMixin,View):
     template_name = 'home.html'
@@ -175,22 +177,24 @@ class HomeView(LoginRequiredMixin,View):
         ax.plot( dates,target_efficiency_data, label='目標燃費')
         ax.plot(dates, achieved_efficiency_data, label='実績燃費')
         
-        registered_groups = set(
-            car_group.get(car.car_model.car_model_name, 'Default Value') 
-            for car in my_cars 
-            if car.car_model is not None
-        )
         
+        
+        # 例: ユーザーが登録した車種のクエリセット
+        registered_cars = MyCar.objects.filter(user=request.user)
+
+        # ユーザーが登録した車種のcar_groupのセット
+        registered_groups = set(registered_cars.values_list('car_model__car_group', flat=True))
+
         for model, efficiency in hybrid_efficiency_data.items():
-            car_model = car_group.get(model)
-            if car_model and car_model in registered_groups:
-                ax.axhline(y=efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
-
-
+            car_model_group = car_group.get(model)
+        if car_model_group and car_model_group in registered_groups:
+            ax.axhline(y=efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
+ 
         for model, efficiency in gasoline_efficiency_data.items():
-            car_model = car_group.get(model)
-            if car_model and car_model in registered_groups:
-                ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
+           car_model_group = car_group.get(model)
+        if car_model_group and car_model_group in registered_groups:
+           ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
+        
 
         
         ax.set_xlabel('日付', family=font_family, fontsize=9)
@@ -240,9 +244,67 @@ class  MyCarView(LoginRequiredMixin,View):
             return render(request, self.template_name)
         my_car = MyCar.objects.filter(user=user_instance).first()
         
+        manufacturer_dict = {
+            'toyota': 'トヨタ',
+            'honda': 'ホンダ',
+            'daihatsu': 'ダイハツ',
+            'nissan': 'ニッサン',
+        }
+
+        car_model_dict = {
+            'AQUA': 'アクア',
+            'ROOMY': 'ルーミー',
+            'ALPHARD': 'アルファード',
+            'RAIZE': 'ライズ',
+            'N-BOX': 'エヌボックス',
+            'FREED': 'フリード',
+            'VEZEL': 'ヴェゼル',
+            'CANBUS': 'ムーヴキャンバス',
+            'Tanto': 'タント',
+            'Rocky': 'ロッキー',
+            'NOTE': 'ノート',
+            'SERENA': 'セレナ',
+            'DAYZ': 'デイズ',
+            'X-TRAIL': 'エクストレイル',
+        }
+
+        engine_type_dict = {
+            'gasoline': 'ガソリン',
+            'hybrid': 'ハイブリッド',
+            'other': 'その他',
+        }
+
+        color_dict = {
+            'red': 'レッド',
+            'blue': 'ブルー',
+            'white': 'ホワイト',
+            'yellow': 'イエロー',
+            'pink': 'ピンク',
+            'green': 'グリーン',
+            'black': 'ブラック',
+            'purple': 'パープル',
+            'grey': 'グレー',
+            'brown': 'ブラウン',
+        }
+
+        if my_car:
+            manufacturer_jp = manufacturer_dict.get(my_car.car_model.manufacturer.manufacturer_name, my_car.car_model.manufacturer.manufacturer_name)
+            car_model_jp = car_model_dict.get(my_car.car_model.car_model_name, my_car.car_model.car_model_name)
+            engine_type_jp = engine_type_dict.get(my_car.car_model.engine_type, my_car.car_model.engine_type)
+            color_jp = color_dict.get(my_car.car_model.color, my_car.car_model.color)
+        else:
+            manufacturer_jp = None
+            car_model_jp = None
+            engine_type_jp = None
+            color_jp = None
+        
         context = {
-             'user':user_instance,
-             'mycars_instance': my_car,
+            'user':user_instance,
+            'mycars_instance': my_car,
+            'manufacturer_jp': manufacturer_jp,
+            'car_model_jp': car_model_jp,
+            'engine_type_jp': engine_type_jp,
+            'color_jp': color_jp,
         }
         return render(request, self.template_name, context)
     
@@ -313,14 +375,14 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         
         user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
         
-        car_models = CarModel.objects.all()
+        user_car_models = [car.car_model for car in user_cars]
 
         context = {
             'car_model': car_model,
             'average_fuel_efficiency': average_fuel_efficiency,
             'form':form,
             'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
-            'car_models':car_models,
+            'car_models':user_car_models
         }
         return render(request, self.template_name, context)
 
@@ -345,7 +407,8 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             return redirect('Edrive:home')  # ホーム画面にリダイレクト
         # フォームが無効な場合は再度フォームとデータをレンダリング
         average_fuel_efficiency = car_model.average_fuel_efficiency  # 平均燃費量を取得
-        user_cars = MyCar.objects.filter(user=request.user).select_related('car_model') 
+        user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
+        user_car_models = [car.car_model for car in user_cars] 
         
         car_models = CarModel.objects.all()
         context = {
@@ -353,7 +416,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             'average_fuel_efficiency': average_fuel_efficiency,
             'form': form,
             'user_cars': user_cars,
-            'car_models': car_models,  
+            'car_models': user_car_models,  
         }
         return render(request, self.template_name, context)
 
@@ -433,7 +496,7 @@ class MyPageView(LoginRequiredMixin,View):
     template_name = 'mypage.html'
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_instance = Users.objects.get(email=user.email)
+        user_instance = Users.objects.get(pk=user.pk)
         my_car = MyCar.objects.filter(user=user_instance).first()
         
         context = {
@@ -456,20 +519,34 @@ class MyPageEditView(View):
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        car_model=CarModel.objects.first()
-        mycars_instance, created = MyCar.objects.get_or_create(user=user, car_model=car_model)
-            
+        #car_model=CarModel.objects.first()
+        #mycars_instance, created = MyCar.objects.get_or_create(user=user, car_model=car_model)
+        mycars_instance = MyCar.objects.filter(user=user).first()
+        if mycars_instance is None:
+            # デフォルトの車モデルを設定
+            car_model = CarModel.objects.first()
+            mycars_instance = MyCar(user=user, car_model=car_model)
+                
         form1 = MyPageEditForm(instance=user)
         form2 = MyCarsForm(instance=mycars_instance)
         return render(request, self.template_name, {'form1': form1, 'form2': form2, 'mycars_instance': mycars_instance})
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
-        mycars_instance = user.mycars.first()  # リレーションされたMyCarsオブジェクトを取得
+        # リレーションされたMyCarsオブジェクトを取得
+        #car_model = CarModel.objects.first()
+        #mycars_instance, created = MyCar.objects.get_or_create(user=user, car_model=car_model)
 
+        
+        mycars_instance = MyCar.objects.filter(user=user).first()
+        if mycars_instance is None:
+            # デフォルトの車モデルを設定
+            car_model = CarModel.objects.first()
+            mycars_instance = MyCar(user=user, car_model=car_model)
+            
         form1 = MyPageEditForm(request.POST, instance=user)
         form2 = MyCarsForm(request.POST, instance=mycars_instance)
-
+        
         if form1.is_valid() and form2.is_valid():
             form1.save()
             form2.save()

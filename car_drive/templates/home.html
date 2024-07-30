@@ -25,7 +25,7 @@
         </a>
         </div>
         <a class="navbar-brand" href="{% url 'Edrive:eco_car_site' %}">エコカー関連サイト</a>
-        <a class="navbar-brand" href="{% url 'Edrive:login' %}">ログアウト</a>
+        <a class="navbar-brand" href="{% url 'Edrive:logout' %}">ログアウト</a>
       </nav>
       </header>
       {% block content %}{% endblock %}
@@ -37,7 +37,10 @@
     
     <p>現在のドライバーレベル<span class="current-level">{{ user.driver_level }}</span></p>
     </div>
-
+    <div class="nav-links">
+    <a class="navbar-brand" href="{% url 'Edrive:records' user.pk %}">燃費入力</a>
+    <a class="navbar-brand" href="{% url 'Edrive:target_fuelefficiency' user.pk %}">目標燃費量入力</a>
+    </div>
     <div class="achievement-container">
         <div class="target-achievement">
             <h4>目標燃費量</h4>
@@ -66,10 +69,7 @@
    <div class="you">
    <img src = "{% get_media_prefix %}you.png"  alt = "葉">
    </div>  
-  <div class="nav-links">
-    <a class="navbar-brand" href="{% url 'Edrive:records' user.pk %}">燃費入力</a>
-    <a class="navbar-brand" href="{% url 'Edrive:target_fuelefficiency' user.pk %}">目標燃費量入力</a>
-  </div>
+  
 
   
 </div>
