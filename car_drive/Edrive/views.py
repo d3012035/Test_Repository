@@ -361,34 +361,33 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
     template_name = 'target_fuelefficiency.html'
     #context_object_name = 'my_car'
      
-    def get(self, request, pk):
-        car_model = get_object_or_404(CarModel, pk=pk)
-        average_fuel_efficiency = car_model.average_fuel_efficiency
-        # ここで平均燃費量を取得する属性を確認してください
-        my_car = MyCar.objects.filter(car_model_id=pk, user=request.user).first()
-        
+    def get(self, request, *args, **kwargs):
+        # ユーザーのIDを取得
+        user_id = request.user.id
+
+
+        my_car = MyCar.objects.filter(user=request.user).first()
         if my_car:
+            average_fuel_efficiency = my_car.car_model.average_fuel_efficiency
             form = TargetFuelForm(instance=my_car)
         else:
+            average_fuel_efficiency = None
             form = TargetFuelForm()
-        
-        
-        user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
-        
-        user_car_models = [car.car_model for car in user_cars]
 
+        
         context = {
-            'car_model': car_model,
             'average_fuel_efficiency': average_fuel_efficiency,
             'form':form,
-            'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
-            'car_models':user_car_models
+            #'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
+            #'car_models':user_car_models
+            'my_car': my_car,
         }
         return render(request, self.template_name, context)
 
-    def post(self, request, pk):
-        car_model = get_object_or_404(CarModel, pk=pk)
-        my_car = MyCar.objects.filter(car_model_id=pk, user=request.user).first()
+    def post(self, request,  *args, **kwargs):
+        user_id = request.user.id
+        car_model = get_object_or_404(CarModel, pk=kwargs.get('pk'))
+        my_car = MyCar.objects.filter(car_model_id=car_model.id, user=user_id).first()
         
         if my_car:
             form = TargetFuelForm(request.POST, instance=my_car)

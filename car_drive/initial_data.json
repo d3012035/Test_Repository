@@ -1,0 +1,242 @@
+[
+{
+    "model": "Edrive.carmodel",
+    "pk": 1,
+    "fields": {
+        "created_at": "2024-07-10T12:19:36.134Z",
+        "updated_at": "2024-07-19T23:53:16.237Z",
+        "name": "default_name",
+        "manufacturer": 3,
+        "car_model_name": "ALPHARD",
+        "engine_type": "gasoline",
+        "color": "white",
+        "average_fuel_efficiency": null,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 2,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-30T02:34:47.255Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "AQUA",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 26.8,
+        "car_group": "コンパクトカー"
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 3,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-17T00:45:58.257Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "ROOMY",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 26.8,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 4,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-17T00:45:58.264Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "ALPHARD",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 17.4,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 5,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-17T00:45:58.272Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "RAIZE",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 27.0,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 6,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-17T00:45:58.277Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "N-BOX",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 27.8,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 7,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-17T00:16:38.819Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "FREED",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 24.5,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 8,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-16T23:38:14.355Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "VEZEL",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 24.8,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 9,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-16T23:38:14.355Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "CANBUS",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 27.9,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 10,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-16T23:38:14.355Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "Tanto",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 27.7,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 11,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-16T23:38:14.355Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "Rocky",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 27.0,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 12,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.355Z",
+        "updated_at": "2024-07-16T23:38:14.355Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "NOTE",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 25.9,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 13,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.356Z",
+        "updated_at": "2024-07-16T23:38:14.356Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "SERENA",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 21.1,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 14,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.356Z",
+        "updated_at": "2024-07-16T23:38:14.356Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "DAYZ",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 28.1,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 15,
+    "fields": {
+        "created_at": "2024-07-16T23:38:14.356Z",
+        "updated_at": "2024-07-16T23:38:14.356Z",
+        "name": "default_name",
+        "manufacturer": null,
+        "car_model_name": "X-TRAIL",
+        "engine_type": "",
+        "color": "",
+        "average_fuel_efficiency": 21.5,
+        "car_group": ""
+    }
+},
+{
+    "model": "Edrive.carmodel",
+    "pk": 16,
+    "fields": {
+        "created_at": "2024-07-20T00:27:37.616Z",
+        "updated_at": "2024-07-20T00:27:37.616Z",
+        "name": "default_name",
+        "manufacturer": 3,
+        "car_model_name": "RAIZE",
+        "engine_type": "gasoline",
+        "color": "white",
+        "average_fuel_efficiency": null,
+        "car_group": null
+    }
+}
+]
