@@ -1,9 +1,44 @@
 [
     {
+        "model": "Edrive.Manufacturer",
+        "pk": 1,
+        "fields": {
+            "name": "トヨタ",
+            "manufacturer_name": "toyota"
+        }
+    },
+    {
+        "model": "Edrive.Manufacturer",
+        "pk": 2,
+        "fields": {
+            "name": "ホンダ",
+            "manufacturer_name": "honda"
+        }
+    },
+    {
+        "model": "Edrive.Manufacturer",
+        "pk": 3,
+        "fields": {
+            "name": "ダイハツ",
+            "manufacturer_name": "daihatsu"
+        }
+    },
+    {
+        "model": "Edrive.Manufacturer",
+        "pk": 4,
+        "fields": {
+            "name": "ニッサン",
+            "manufacturer_name": "nissan"
+        }
+    },
+
+
+
+    {
         "model": "Edrive.CarModel",
         "pk": 1,
         "fields": {
-            "car_model_name": "AQUA",
+            "car_model_name": "アクア",
             "average_fuel_efficiency": 26.8,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -13,7 +48,7 @@
         "model": "Edrive.CarModel",
         "pk": 2,
         "fields": {
-            "car_model_name": "ROOMY",
+            "car_model_name": "ルーミー",
             "average_fuel_efficiency": 26.8,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -23,7 +58,7 @@
         "model": "Edrive.CarModel",
         "pk": 3,
         "fields": {
-            "car_model_name": "ALPHARD",
+            "car_model_name": "アルファード",
             "average_fuel_efficiency": 17.4,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -33,7 +68,7 @@
         "model": "Edrive.CarModel",
         "pk": 4,
         "fields": {
-            "car_model_name": "RAIZE",
+            "car_model_name": "ライズ",
             "average_fuel_efficiency": 27.0,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -43,7 +78,7 @@
         "model": "Edrive.CarModel",
         "pk": 5,
         "fields": {
-            "car_model_name": "N-BOX",
+            "car_model_name": "エヌボックス",
             "average_fuel_efficiency": 27.8,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -53,7 +88,7 @@
         "model": "Edrive.CarModel",
         "pk": 6,
         "fields": {
-            "car_model_name": "FREED",
+            "car_model_name": "フリード",
             "average_fuel_efficiency": 24.5,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -63,7 +98,7 @@
         "model": "Edrive.CarModel",
         "pk": 7,
         "fields": {
-            "car_model_name": "VEZEL",
+            "car_model_name": "ヴェゼル",
             "average_fuel_efficiency": 24.8,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -73,7 +108,7 @@
         "model": "Edrive.CarModel",
         "pk": 8,
         "fields": {
-            "car_model_name": "CANBUS",
+            "car_model_name": "ムーヴキャンバス",
             "average_fuel_efficiency": 27.9,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -83,7 +118,7 @@
         "model": "Edrive.CarModel",
         "pk": 9,
         "fields": {
-            "car_model_name": "Tanto",
+            "car_model_name": "タント",
             "average_fuel_efficiency": 27.7,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -93,7 +128,7 @@
         "model": "Edrive.CarModel",
         "pk": 10,
         "fields": {
-            "car_model_name": "Rocky",
+            "car_model_name": "ロッキー",
             "average_fuel_efficiency": 27.0,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -103,7 +138,7 @@
         "model": "Edrive.CarModel",
         "pk": 11,
         "fields": {
-            "car_model_name": "NOTE",
+            "car_model_name": "ノート",
             "average_fuel_efficiency": 25.9,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -113,7 +148,7 @@
         "model": "Edrive.CarModel",
         "pk": 12,
         "fields": {
-            "car_model_name": "SERENA",
+            "car_model_name": "セレナ",
             "average_fuel_efficiency": 21.1,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -123,7 +158,7 @@
         "model": "Edrive.CarModel",
         "pk": 13,
         "fields": {
-            "car_model_name": "DAYZ",
+            "car_model_name": "デイズ",
             "average_fuel_efficiency": 28.1,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
@@ -133,10 +168,11 @@
         "model": "Edrive.CarModel",
         "pk": 14,
         "fields": {
-            "car_model_name": "X-TRAIL",
+            "car_model_name": "エクストレイル",
             "average_fuel_efficiency": 21.5,
             "created_at": "2023-01-01T00:00:00Z",
             "updated_at": "2023-01-01T00:00:00Z"
         }
     }
 ]
+

@@ -36,7 +36,7 @@ import matplotlib.font_manager as fm
 
 
 
-Users = get_user_model()
+#Users = get_user_model()
 
 class PortfolioView(TemplateView):
     template_name = 'portfolio.html'
@@ -84,9 +84,9 @@ class HomeView(LoginRequiredMixin,View):
         
         
         try:
-            user_instance = Users.objects.get(email=user.email)
+            user_instance = User.objects.get(email=user.email)
             
-        except Users.DoesNotExist:
+        except User.DoesNotExist:
             user_instance = None
 
         if user_instance is None:
@@ -102,23 +102,28 @@ class HomeView(LoginRequiredMixin,View):
         
           
         
-        target_achievement_count = user_instance.target_achievement_count
+        #target_achievement_count = user_instance.target_achievement_count
 
-        for record in fuel_records:
-            if record.fuel_efficiency is not None and record.my_car.target_fuel_efficiency is not None:
-              if record.fuel_efficiency >= record.my_car.target_fuel_efficiency:
-                target_achievement_count += 1
+        #for record in fuel_records:
+        #    if record.fuel_efficiency is not None and record.my_car.target_fuel_efficiency is not None:
+        #      if record.fuel_efficiency >= record.my_car.target_fuel_efficiency:
+        #          target_achievement_count += 1
 
-        if target_achievement_count >= 5:
-          user_instance.driver_level += 1
-          user_instance.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
-        else:
-             user_instance.target_achievement_count = target_achievement_count
+        #if target_achievement_count >= 5:
+        #   user_instance.driver_level += 1
+        #   user_instance.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
+        #else:
+        #   user_instance.target_achievement_count = target_achievement_count
 
-        user_instance.save()
+        #user_instance.save()
+        
+        remaining_targets = 5 - user_instance.target_achievement_count
         #else:
         #    my_cars = []
         #    fuel_records = []
+        target_efficiency_data = []
+        achieved_efficiency_data = []
+        dates = []
         
         for record in fuel_records:
             target_efficiency_data.append(record.my_car.target_fuel_efficiency)
@@ -165,8 +170,8 @@ class HomeView(LoginRequiredMixin,View):
         }
         
             
-        car_models = CarModel.objects.all()
-        average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
+        
+        #average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
 
         
         font_family = 'IPAexGothic'
@@ -184,16 +189,25 @@ class HomeView(LoginRequiredMixin,View):
 
         # ユーザーが登録した車種のcar_groupのセット
         registered_groups = set(registered_cars.values_list('car_model__car_group', flat=True))
+        
+        font_family = 'IPAexGothic'
+                
+        plt.switch_backend('Agg')  # バックエンドを変更
+        fig, ax = plt.subplots()
+        
+        ax.plot( dates,target_efficiency_data, label='目標燃費')
+        ax.plot(dates, achieved_efficiency_data, label='実績燃費')
+        
 
-        for model, efficiency in hybrid_efficiency_data.items():
+        for model, fuel_efficiency in hybrid_efficiency_data.items():
             car_model_group = car_group.get(model)
         if car_model_group and car_model_group in registered_groups:
-            ax.axhline(y=efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
+            ax.axhline(y=fuel_efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
  
-        for model, efficiency in gasoline_efficiency_data.items():
+        for model, fuel_efficiency in gasoline_efficiency_data.items():
            car_model_group = car_group.get(model)
         if car_model_group and car_model_group in registered_groups:
-           ax.axhline(y=efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
+           ax.axhline(y=fuel_efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
         
 
         
@@ -215,7 +229,8 @@ class HomeView(LoginRequiredMixin,View):
             'user': user_instance,
             'my_cars': my_cars,
             'fuel_records': fuel_records,
-            'target_achievement_count': target_achievement_count,
+            'target_achievement_count': user_instance.target_achievement_count,
+            'remaining_targets': remaining_targets,
             'target_efficiency_data': target_efficiency_data,
             'achieved_efficiency_data': achieved_efficiency_data,
             'hybrid_efficiency_data': hybrid_efficiency_data,
@@ -236,8 +251,8 @@ class  MyCarView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         user = request.user
         try:
-            user_instance = Users.objects.get(email=user.email)
-        except Users.DoesNotExist:
+            user_instance = User.objects.get(email=user.email)
+        except User.DoesNotExist:
             user_instance = None
 
         if user_instance is None:
@@ -288,7 +303,10 @@ class  MyCarView(LoginRequiredMixin,View):
         }
 
         if my_car:
-            manufacturer_jp = manufacturer_dict.get(my_car.car_model.manufacturer.manufacturer_name, my_car.car_model.manufacturer.manufacturer_name)
+            manufacturer_jp = "不明"  # デフォルト値を設定
+            if my_car.car_model.manufacturer is not None:
+                manufacturer_name = my_car.car_model.manufacturer.manufacturer_name
+                manufacturer_jp = manufacturer_dict.get(manufacturer_name, manufacturer_name)
             car_model_jp = car_model_dict.get(my_car.car_model.car_model_name, my_car.car_model.car_model_name)
             engine_type_jp = engine_type_dict.get(my_car.car_model.engine_type, my_car.car_model.engine_type)
             color_jp = color_dict.get(my_car.car_model.color, my_car.car_model.color)
@@ -349,12 +367,31 @@ class RecordsView(View):
                     fuel_amount=fuel_amount,
                     fuel_efficiency=fuel_efficiency
                 )
+                    
+        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
+        target_achievement_count = user.target_achievement_count
+
+        for record in fuel_records:
+            if record.fuel_efficiency is not None and record.my_car.target_fuel_efficiency is not None:
+                if record.fuel_efficiency >= record.my_car.target_fuel_efficiency:
+                    target_achievement_count += 1
+
+        if target_achievement_count >= 5:
+            user.driver_level += 1
+            user.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
+        else:
+            user.target_achievement_count = target_achievement_count
+
+        user.save()
+
+        remaining_targets = 5 - user.target_achievement_count
+
+
+
+        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk, 'remaining_targets': remaining_targets})
          # 燃費記録の表示ページにリダイレクト
         return redirect('Edrive:records', pk=pk)
     
-        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
-        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
-        
     
 class TargetFuelView(LoginRequiredMixin, UpdateView):
     #model = MyCars
@@ -495,7 +532,7 @@ class MyPageView(LoginRequiredMixin,View):
     template_name = 'mypage.html'
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_instance = Users.objects.get(pk=user.pk)
+        user_instance = User.objects.get(pk=user.pk)
         my_car = MyCar.objects.filter(user=user_instance).first()
         
         context = {
