@@ -45,8 +45,8 @@ class TargetFuelForm(forms.ModelForm):
         
 class RecordsForm(forms.ModelForm):
     created_at = forms.DateTimeField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
-    distance = forms.FloatField(label = '走行距離')
-    fuel_amount = forms.FloatField(label = '給油量')
+    distance = forms.FloatField(label = '走行距離(km)')
+    fuel_amount = forms.FloatField(label = '給油量(L)')
     
     
     
@@ -133,9 +133,10 @@ class MyCarDetailForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super(MyCarDetailForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
+        if self.instance.manufacturer:
             self.fields['manufacturer_name'].initial = self.instance.manufacturer.manufacturer_name
-
+        else:
+            self.fields['manufacturer_name'].initial = self.fields['manufacturer_name'].choices[0][0]
     def save(self, commit=True):
         instance = super(MyCarDetailForm, self).save(commit=False)
         manufacturer_name = self.cleaned_data['manufacturer_name']

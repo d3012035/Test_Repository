@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#2_sff$4w!9xvms@kck(^m_c7g(7n%*-tpuj67cuc!cdjo%e3*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '.pythonanywhere.com', 'emika.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost',  '127.0.0.1', '.pythonanywhere.com', 'emika.pythonanywhere.com']
 
 from django.core.management.utils import get_random_secret_key
 SECRET_KEY = get_random_secret_key()  

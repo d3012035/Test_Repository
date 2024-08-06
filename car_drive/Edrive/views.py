@@ -101,7 +101,7 @@ class HomeView(LoginRequiredMixin,View):
         dates = []
         
           
-        
+        #remaining_targets = request.session.get('remaining_targets', 5 - user_instance.target_achievement_count)
         #target_achievement_count = user_instance.target_achievement_count
 
         #for record in fuel_records:
@@ -303,7 +303,7 @@ class  MyCarView(LoginRequiredMixin,View):
         }
 
         if my_car:
-            manufacturer_jp = "不明"  # デフォルト値を設定
+            manufacturer_jp = "None"  # デフォルト値を設定
             if my_car.car_model.manufacturer is not None:
                 manufacturer_name = my_car.car_model.manufacturer.manufacturer_name
                 manufacturer_jp = manufacturer_dict.get(manufacturer_name, manufacturer_name)
@@ -362,10 +362,10 @@ class RecordsView(View):
                   my_car = my_cars.first()
                   if my_car:
                     FuelRecord.objects.create(
-                    my_car=my_car,    
-                    distance=distance,
-                    fuel_amount=fuel_amount,
-                    fuel_efficiency=fuel_efficiency
+                       my_car=my_car,    
+                       distance=distance,
+                       fuel_amount=fuel_amount,
+                       fuel_efficiency=fuel_efficiency
                 )
                     
         fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
@@ -387,8 +387,7 @@ class RecordsView(View):
         remaining_targets = 5 - user.target_achievement_count
 
 
-
-        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk, 'remaining_targets': remaining_targets})
+        return render(request, self.template_name, {'user':user,'fuel_records': fuel_records, 'form': form, 'car_id': pk, 'remaining_targets': remaining_targets})
          # 燃費記録の表示ページにリダイレクト
         return redirect('Edrive:records', pk=pk)
     
@@ -428,19 +427,18 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         
         if my_car:
             form = TargetFuelForm(request.POST, instance=my_car)
-        else:
-            # 新しいレコードを作成する場合
-            form = TargetFuelForm(request.POST)
-            if form.is_valid():
-                new_my_car = form.save(commit=False)
-                new_my_car.user = request.user
-                new_my_car.car_model = car_model
-                new_my_car.save()
-                return redirect('Edrive:home')
         
-        if form.is_valid():
-            form.save()  # フォームの内容を保存
-            return redirect('Edrive:home')  # ホーム画面にリダイレクト
+            if form.is_valid():
+                form.save()  # フォームの内容を保存
+                return redirect('Edrive:home')  # ホーム画面にリダイレクト
+        else:
+            form = TargetFuelForm()
+        # エラーメッセージを設定
+            error_message = "レコードが存在しません。"
+        
+        #if form.is_valid():
+         #   form.save()  # フォームの内容を保存
+          #  return redirect('Edrive:home')  # ホーム画面にリダイレクト
         # フォームが無効な場合は再度フォームとデータをレンダリング
         average_fuel_efficiency = car_model.average_fuel_efficiency  # 平均燃費量を取得
         user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
@@ -454,6 +452,10 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             'user_cars': user_cars,
             'car_models': user_car_models,  
         }
+        
+        if not my_car:
+           context['error_message'] = error_message
+
         return render(request, self.template_name, context)
 
     #def get_context_data(self, **kwargs):
@@ -505,10 +507,11 @@ class MyCarDetailView(View):
         mycars_instance = MyCar.objects.filter(user=user).first()
         
         if mycars_instance:
-            car_model_instance = mycars_instance.car_model
-            form1 = MyCarDetailForm(request.POST, instance=car_model_instance)
+            car_model = mycars_instance.car_model
+            form1 = MyCarDetailForm(request.POST, instance=car_model)
             form2 = MyCarDeForm(request.POST, instance=mycars_instance)
         else:
+            
             form1 = MyCarDetailForm(request.POST)
             form2 = MyCarDeForm(request.POST)
         
@@ -574,21 +577,21 @@ class MyPageEditView(View):
         #mycars_instance, created = MyCar.objects.get_or_create(user=user, car_model=car_model)
 
         
-        mycars_instance = MyCar.objects.filter(user=user).first()
-        if mycars_instance is None:
+        my_car = MyCar.objects.filter(user=user).first()
+        if my_car is None:
             # デフォルトの車モデルを設定
             car_model = CarModel.objects.first()
-            mycars_instance = MyCar(user=user, car_model=car_model)
+            my_car = MyCar(user=user, car_model=car_model)
             
         form1 = MyPageEditForm(request.POST, instance=user)
-        form2 = MyCarsForm(request.POST, instance=mycars_instance)
+        form2 = MyCarsForm(request.POST, instance=my_car)
         
         if form1.is_valid() and form2.is_valid():
             form1.save()
             form2.save()
             return redirect(reverse_lazy('Edrive:mypage', kwargs={'pk': user.pk}))
 
-        return render(request, self.template_name, {'form1': form1, 'form2': form2, 'mycars_instance': mycars_instance})
+        return render(request, self.template_name, {'form1': form1, 'form2': form2, 'my_car': my_car})
 
     def get_object(self):
         return User.objects.get(pk=self.kwargs['pk'])
