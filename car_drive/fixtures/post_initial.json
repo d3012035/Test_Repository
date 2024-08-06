@@ -4,7 +4,9 @@
         "pk": 1,
         "fields": {
             "name": "トヨタ",
-            "manufacturer_name": "toyota"
+            "manufacturer_name": "toyota",
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z"
         }
     },
     {
@@ -12,7 +14,9 @@
         "pk": 2,
         "fields": {
             "name": "ホンダ",
-            "manufacturer_name": "honda"
+            "manufacturer_name": "honda",
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z"
         }
     },
     {
@@ -20,7 +24,9 @@
         "pk": 3,
         "fields": {
             "name": "ダイハツ",
-            "manufacturer_name": "daihatsu"
+            "manufacturer_name": "daihatsu",
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z"
         }
     },
     {
@@ -28,7 +34,9 @@
         "pk": 4,
         "fields": {
             "name": "ニッサン",
-            "manufacturer_name": "nissan"
+            "manufacturer_name": "nissan",
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z"
         }
     },
 
@@ -38,140 +46,199 @@
         "model": "Edrive.CarModel",
         "pk": 1,
         "fields": {
-            "car_model_name": "アクア",
+            "car_model_name": "アクア(ガソリン車)",
             "average_fuel_efficiency": 26.8,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"コンパクトカー",
+            "engine_type":"gasoline"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 2,
         "fields": {
-            "car_model_name": "ルーミー",
-            "average_fuel_efficiency": 26.8,
+            "car_model_name": "アクア(ハイブリッド車)",
+            "average_fuel_efficiency": 27.5,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"コンパクトカー",
+            "engine_type":"hybrid"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 3,
         "fields": {
-            "car_model_name": "アルファード",
-            "average_fuel_efficiency": 17.4,
+            "car_model_name": "ルーミー(ガソリン車)",
+            "average_fuel_efficiency": 26.8,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"コンパクトカー",
+            "engine_type":"gasoline"
+
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 4,
         "fields": {
-            "car_model_name": "ライズ",
-            "average_fuel_efficiency": 27.0,
+            "car_model_name": "アルファード(ガソリン車)",
+            "average_fuel_efficiency": 17.4,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"ミニバン",
+            "engine_type":"gasoline"
+    
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 5,
         "fields": {
-            "car_model_name": "エヌボックス",
-            "average_fuel_efficiency": 27.8,
+            "car_model_name": "アルファード(ハイブリッド車)",
+            "average_fuel_efficiency": 16.68,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"ミニバン",
+            "engine_type":"hybrid"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 6,
         "fields": {
-            "car_model_name": "フリード",
-            "average_fuel_efficiency": 24.5,
+            "car_model_name": "ライズ",
+            "average_fuel_efficiency": 27.0,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":1,
+            "car_group":"SUV"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 7,
         "fields": {
-            "car_model_name": "ヴェゼル",
-            "average_fuel_efficiency": 24.8,
+            "car_model_name": "エヌボックス",
+            "average_fuel_efficiency": 27.8,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":2,
+            "car_group":"軽自動車"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 8,
         "fields": {
-            "car_model_name": "ムーヴキャンバス",
-            "average_fuel_efficiency": 27.9,
+            "car_model_name": "フリード",
+            "average_fuel_efficiency": 24.5,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":2,
+            "car_group":"ミニバン"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 9,
         "fields": {
-            "car_model_name": "タント",
-            "average_fuel_efficiency": 27.7,
+            "car_model_name": "ヴェゼル",
+            "average_fuel_efficiency": 24.8,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":2,
+            "car_group":"SUV"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 10,
         "fields": {
-            "car_model_name": "ロッキー",
-            "average_fuel_efficiency": 27.0,
+            "car_model_name": "ムーヴキャンバス",
+            "average_fuel_efficiency": 27.9,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":3,
+            "car_group":"軽自動車"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 11,
         "fields": {
-            "car_model_name": "ノート",
-            "average_fuel_efficiency": 25.9,
+            "car_model_name": "タント",
+            "average_fuel_efficiency": 27.7,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":3,
+            "car_group":"軽自動車"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 12,
         "fields": {
-            "car_model_name": "セレナ",
-            "average_fuel_efficiency": 21.1,
+            "car_model_name": "ロッキー",
+            "average_fuel_efficiency": 27.0,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":3,
+            "car_group":"SUV"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 13,
         "fields": {
-            "car_model_name": "デイズ",
-            "average_fuel_efficiency": 28.1,
+            "car_model_name": "ノート",
+            "average_fuel_efficiency": 25.9,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":4,
+            "car_group":"コンパクトカー"
         }
     },
     {
         "model": "Edrive.CarModel",
         "pk": 14,
         "fields": {
+            "car_model_name": "セレナ",
+            "average_fuel_efficiency": 21.1,
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":4,
+            "car_group":"ミニバン"
+        }
+    },
+    {
+        "model": "Edrive.CarModel",
+        "pk": 15,
+        "fields": {
+            "car_model_name": "デイズ",
+            "average_fuel_efficiency": 28.1,
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":4,
+            "car_group":"軽自動車"
+        }
+    },
+    {
+        "model": "Edrive.CarModel",
+        "pk": 16,
+        "fields": {
             "car_model_name": "エクストレイル",
             "average_fuel_efficiency": 21.5,
             "created_at": "2023-01-01T00:00:00Z",
-            "updated_at": "2023-01-01T00:00:00Z"
+            "updated_at": "2023-01-01T00:00:00Z",
+            "manufacturer_id":4,
+            "car_group":"SUV"
         }
     }
 ]

@@ -56,103 +56,43 @@ class RecordsForm(forms.ModelForm):
         
 class MyCarDetailForm(forms.ModelForm):
     
-    
-    MANUFACTURER_CHOICES = [
-        ('toyota', 'トヨタ'),
-        ('honda', 'ホンダ'),
-        ('daihatsu', 'ダイハツ'),
-        ('nissan', 'ニッサン'),
-    ]  
-    manufacturer_name = forms.ChoiceField(
+    manufacturer_id = forms.ModelChoiceField(
         label = 'メーカー',
-        choices=MANUFACTURER_CHOICES,          
+        queryset=Manufacturer.objects.all(),
+                
         required=True,
         widget=forms.widgets.Select(attrs={'class': 'form-control'})
-     )
+    )
     
     
-    CarModel_CHOICES = [
-        ('AQUA', 'アクア'),
-        ('ROOMY','ルーミー'),
-        ('ALPHARD','アルファード'),
-        ('RAIZE', 'ライズ'),
-        ('N-BOX','エヌボックス'),
-        ('FREED','フリード'),
-        ('VEZEL', 'ヴェゼル'),
-        ('CANBUS', 'ムーヴキャンバス'),
-        ('Tanto','タント'),
-        ('Rocky', 'ロッキー'),
-        ('NOTE', 'ノート'),
-        ('SERENA','セレナ'),
-        ('DAYZ','デイズ'),
-        ('X-TRAIL', 'エクストレイル'),
-        
-    ]
-    car_model_name = forms.ChoiceField(
+    
+    car_model_id = forms.ModelChoiceField(
         label= '車種',
-        choices=CarModel_CHOICES,
-        required=True,
-        widget=forms.widgets.Select(attrs={'class':'form-control'})
-        )
-    
-    EngineType_CHOICES = [
-        ('gasoline', 'ガソリン'),
-        ('hybrid', 'ハイブリッド'),
-        ('other', 'その他'),
-    ]
-    engine_type = forms.ChoiceField(
-        label='エンジン',
-        choices=EngineType_CHOICES,
-        required=True,
-        widget=forms.widgets.Select(attrs={'class':'form-control'})
-        )
-    
-    Color_CHOICES = [ 
-        ('red', 'レッド'),
-        ('blue','ブルー'),
-        ('white','ホワイト'),
-        ('yellow', 'イエロー'),
-        ('pink', 'ピンク'),
-        ('green', 'グリーン'),
-        ('black', 'ブラック'),
-        ('purple', 'パープル'),
-        ('grey', 'グレー'),
-        ('brown', 'ブラウン'),
+        queryset=CarModel.objects.all(),
         
-    ]
-    color = forms.ChoiceField(
-        label='カラー',
-        choices=Color_CHOICES,
         required=True,
         widget=forms.widgets.Select(attrs={'class':'form-control'})
-        )
+    )
     
-    class Meta:
-        model = CarModel
-        fields = [ 'manufacturer_name', 'car_model_name', 'engine_type', 'color' ]
+    
         
     def __init__(self, *args, **kwargs):
         super(MyCarDetailForm, self).__init__(*args, **kwargs)
-        if self.instance.manufacturer:
-            self.fields['manufacturer_name'].initial = self.instance.manufacturer.manufacturer_name
-        else:
-            self.fields['manufacturer_name'].initial = self.fields['manufacturer_name'].choices[0][0]
+    
     def save(self, commit=True):
         instance = super(MyCarDetailForm, self).save(commit=False)
-        manufacturer_name = self.cleaned_data['manufacturer_name']
-        manufacturer, created = Manufacturer.objects.get_or_create(manufacturer_name=manufacturer_name)
-        instance.manufacturer = manufacturer
+    
         if commit:
             instance.save()
         return instance
-        
-class MyCarDeForm(forms.ModelForm):
+    
     purchase_on = forms.DateField(label = '購入年月', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))
     
     class Meta:
         model = MyCar
-        fields = ['purchase_on']
+        fields = ['car_model_id', 'purchase_on']
             
+
 class MyPageEditForm(forms.ModelForm):
     user_name = forms.CharField(label = '名前/ニックネーム', max_length=50, required=False,widget=forms.TextInput(attrs={'class': 'form-control'}))
     licence_expiry_on = forms.DateField(label = '運転免許証', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class':'form-control'}))

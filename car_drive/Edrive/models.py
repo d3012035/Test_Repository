@@ -79,7 +79,8 @@ class Manufacturer(BaseModel):
     
     name = models.CharField(max_length=1000, default='default_name')
     manufacturer_name = models.CharField(max_length=70, choices=MANUFACTURER_CHOICES)
-    
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = 'manufacturers'
         
@@ -129,6 +130,8 @@ class CarModel(BaseModel):
     average_fuel_efficiency = models.FloatField(null=True, blank=True)
     car_group = models.CharField(max_length=200, null=True, default=None)
     
+    def __str__(self):
+        return self.car_model_name
     class Meta:
         db_table = 'car_models'
     

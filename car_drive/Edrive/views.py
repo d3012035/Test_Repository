@@ -15,7 +15,7 @@ from .forms import RegistForm
 from .forms import LoginForm
 from .forms import TargetFuelForm
 from .forms import RecordsForm
-from .forms import MyCarDetailForm, MyCarDeForm
+from .forms import MyCarDetailForm
 from .forms import MyPageEditForm, MyCarsForm
 from .models import User, MyCar
 from .models import CarModel, Manufacturer
@@ -484,15 +484,12 @@ class MyCarDetailView(View):
         
         if mycars_instance:
             car_model = mycars_instance.car_model      
-            form1 = MyCarDetailForm(instance=car_model)
-            form2 = MyCarDeForm(instance=mycars_instance)
+            form1 = MyCarDetailForm(instance=mycars_instance)
         else:
             form1 = MyCarDetailForm()
-            form2 = MyCarDeForm()
             
         context = {
             'form1': form1,
-            'form2': form2,
             'mycars_instance': mycars_instance
         }    
             
@@ -508,24 +505,20 @@ class MyCarDetailView(View):
         
         if mycars_instance:
             car_model = mycars_instance.car_model
-            form1 = MyCarDetailForm(request.POST, instance=car_model)
-            form2 = MyCarDeForm(request.POST, instance=mycars_instance)
+            form1 = MyCarDetailForm(request.POST, instance=mycars_instance)
         else:
             
             form1 = MyCarDetailForm(request.POST)
-            form2 = MyCarDeForm(request.POST)
         
-        if form1.is_valid() and form2.is_valid():
-            car_model = form1.save()
-            mycars_instance = form2.save(commit=False)
+        if form1.is_valid() :
+            mycars_instance = form1.save(commit=False)
             mycars_instance.user = user
-            mycars_instance.car_model = car_model
             mycars_instance.save()
-            return redirect(reverse_lazy('Edrive:my_car', kwargs={'pk':user.pk}))  
-        
+            return redirect(reverse_lazy('Edrive:my_car', kwargs={'pk':user.pk}))
+        print(request.POST)  
+        print(form1.errors)
         context = {
             'form1': form1,
-            'form2': form2,
             'mycars_instance': mycars_instance
         }
         return render(request, self.template_name,context)
