@@ -8,7 +8,7 @@ from . import forms
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
-
+from django.db.models import Avg
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import RegistForm
@@ -96,10 +96,6 @@ class HomeView(LoginRequiredMixin,View):
         my_cars = MyCar.objects.filter(user=user_instance)if MyCar.objects.filter(user=user_instance).exists() else []
         fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('created_at') if FuelRecord.objects.filter(my_car__user=user_instance).exists() else []
         
-        target_efficiency_data = []
-        achieved_efficiency_data = []
-        dates = []
-        
           
         #remaining_targets = request.session.get('remaining_targets', 5 - user_instance.target_achievement_count)
         #target_achievement_count = user_instance.target_achievement_count
@@ -124,57 +120,49 @@ class HomeView(LoginRequiredMixin,View):
         target_efficiency_data = []
         achieved_efficiency_data = []
         dates = []
+        average_fuel_efficiencies = []
         
         for record in fuel_records:
             target_efficiency_data.append(record.my_car.target_fuel_efficiency)
             achieved_efficiency_data.append(record.fuel_efficiency)
             dates.append(record.created_at)
-            
-            
-            
-        car_group = {
-            'AQUA': 'コンパクトカー', 'ROOMY': 'コンパクトカー', 'NOTE': 'コンパクトカー',
-            'ALPHARD': 'ミニバン', 'FREED': 'ミニバン', 'SERENA': 'ミニバン',
-            'RAIZE': 'SUV', 'VEZEL': 'SUV', 'X-TRAIL': 'SUV', 'Rocky': 'SUV',
-            'N-BOX': '軽自動車', 'CANBUS': '軽自動車', 'Tanto': '軽自動車', 'DAYZ': '軽自動車'
-        }
-            
-        hybrid_efficiency_data = {
-            'AQUA': 27.5,
-            'ALPHARD': 16.68,
-            'RAIZE': 25.16,
-            'FREED': 18.9,
-            'VEZEL': 20.65,
-            'Rocky': 27.0,
-            'NOTE': 23.7,
-            'SERENA': 17.3,
-            'DAYZ': 16.76,
-            'X-TRAIL': 15.18,
-        }
+        #for my_car in my_cars:
+          #  average_fuel_efficiencies.append(my_car.car_model.average_fuel_efficiency)#car_groupのみ取り出すには
+         #ユーザーのマイカーからグループを取得
+        # 例: ユーザーが登録した車種のクエリセット
+        
+        # car_groupごとの平均燃費を計算
+        #car_groups = CarModel.objects.values('car_group').annotate(average_fuel_efficiency=Avg('average_fuel_efficiency'))
+        # ユーザーのマイカーの車種のグループを取得
+        car_groups = []
+        for my_car in my_cars:
+            car_group = my_car.car_model.car_group
+            car_groups.append(car_group)
 
-        gasoline_efficiency_data = {
-            'AQUA': 26.8,
-            'ROOMY': 26.8,
-            'ALPHARD': 17.4,
-            'RAIZE': 27.0,
-            'N-BOX': 27.8,
-            'FREED': 24.5,
-            'VEZEL': 24.8,
-            'CANBUS': 27.9,
-            'Tanto': 27.7,
-            'Rocky': 27.0,
-            'NOTE': 25.9,
-            'SERENA': 21.1,
-            'DAYZ': 28.1,
-            'X-TRAIL': 21.5,
-        }
-        
-            
-        
-        #average_fuel_efficiency = {car_model.car_model_name: car_model.average_fuel_efficiency for car_model in car_models}
+        # 重複を排除するためにセットに変換
+        car_groups = set(car_groups)
+
+        # 各グループに属する車種ごとの平均燃費を取得
+        average_fuel_efficiencies = []
+        for group in car_groups:
+            car_models_in_group = CarModel.objects.filter(car_group=group)
+            for car_model in car_models_in_group:
+                average_fuel_efficiencies.append({
+                    'car_model_name': car_model.car_model_name,
+                    'average_fuel_efficiency': car_model.average_fuel_efficiency
+                })
 
         
-        font_family = 'IPAexGothic'
+        font_family = 'Yu Gothic'            #'IPAexGothic'
+    
+        available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
+        font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
+
+        if font_family not in font_names:
+           raise ValueError(f"Font family '{font_family}' not found in the system. Please install it first.")
+
+            
+        
                 
         plt.switch_backend('Agg')  # バックエンドを変更
         fig, ax = plt.subplots()
@@ -182,33 +170,18 @@ class HomeView(LoginRequiredMixin,View):
         ax.plot( dates,target_efficiency_data, label='目標燃費')
         ax.plot(dates, achieved_efficiency_data, label='実績燃費')
         
-        
+        #ax.axhline(y=average_fuel_efficiencies, color='blue', linestyle='--', label=f'平均燃費')
         
         # 例: ユーザーが登録した車種のクエリセット
-        registered_cars = MyCar.objects.filter(user=request.user)
-
-        # ユーザーが登録した車種のcar_groupのセット
-        registered_groups = set(registered_cars.values_list('car_model__car_group', flat=True))
-        
-        font_family = 'IPAexGothic'
-                
-        plt.switch_backend('Agg')  # バックエンドを変更
-        fig, ax = plt.subplots()
-        
-        ax.plot( dates,target_efficiency_data, label='目標燃費')
-        ax.plot(dates, achieved_efficiency_data, label='実績燃費')
+        # car_groupごとの平均燃費をプロット
         
 
-        for model, fuel_efficiency in hybrid_efficiency_data.items():
-            car_model_group = car_group.get(model)
-        if car_model_group and car_model_group in registered_groups:
-            ax.axhline(y=fuel_efficiency, color='green', linestyle='--', label=f'ハイブリッド {model} 平均燃費')
- 
-        for model, fuel_efficiency in gasoline_efficiency_data.items():
-           car_model_group = car_group.get(model)
-        if car_model_group and car_model_group in registered_groups:
-           ax.axhline(y=fuel_efficiency, color='blue', linestyle='--', label=f'ガソリン {model} 平均燃費')
-        
+        #for group_data in car_groups:
+        #    ax.axhline(y=group_data['average_fuel_efficiency'], linestyle='--', label=f'{group_data["car_group"]} 平均燃費')
+        # 各車種ごとの平均燃費をプロット
+        for group_data in average_fuel_efficiencies:
+            ax.axhline(y=group_data['average_fuel_efficiency'], color='green', linestyle='--', label=f'{group_data["car_model_name"]} 平均燃費')
+    
 
         
         ax.set_xlabel('日付', family=font_family, fontsize=9)
@@ -233,8 +206,7 @@ class HomeView(LoginRequiredMixin,View):
             'remaining_targets': remaining_targets,
             'target_efficiency_data': target_efficiency_data,
             'achieved_efficiency_data': achieved_efficiency_data,
-            'hybrid_efficiency_data': hybrid_efficiency_data,
-            'gasoline_efficiency_data': gasoline_efficiency_data,
+            'average_fuel_efficiencies':average_fuel_efficiencies,
             'graph_url': graph_url,
         }
 
@@ -370,19 +342,20 @@ class RecordsView(View):
                     
         fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
         target_achievement_count = user.target_achievement_count
-
-        for record in fuel_records:
-            if record.fuel_efficiency is not None and record.my_car.target_fuel_efficiency is not None:
-                if record.fuel_efficiency >= record.my_car.target_fuel_efficiency:
+        
+        latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
+        if latest_fuel_record:
+            if latest_fuel_record.fuel_efficiency is not None and latest_fuel_record.my_car.target_fuel_efficiency is not None:
+                if latest_fuel_record.fuel_efficiency >= latest_fuel_record.my_car.target_fuel_efficiency:
                     target_achievement_count += 1
 
-        if target_achievement_count >= 5:
-            user.driver_level += 1
-            user.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
-        else:
-            user.target_achievement_count = target_achievement_count
+            if target_achievement_count >= 5:
+                user.driver_level += 1
+                user.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
+            else:
+                user.target_achievement_count = target_achievement_count
 
-        user.save()
+            user.save()
 
         remaining_targets = 5 - user.target_achievement_count
 
@@ -393,8 +366,9 @@ class RecordsView(View):
     
     
 class TargetFuelView(LoginRequiredMixin, UpdateView):
-    #model = MyCars
+    model = MyCar
     template_name = 'target_fuelefficiency.html'
+    form_class = TargetFuelForm
     #context_object_name = 'my_car'
      
     def get(self, request, *args, **kwargs):
@@ -421,40 +395,43 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         return render(request, self.template_name, context)
 
     def post(self, request,  *args, **kwargs):
-        user_id = request.user.id
-        car_model = get_object_or_404(CarModel, pk=kwargs.get('pk'))
-        my_car = MyCar.objects.filter(car_model_id=car_model.id, user=user_id).first()
+        #car_model = get_object_or_404(CarModel, pk=kwargs.get('pk'))
+        pk = kwargs.get('pk')
+        # pk でユーザーを取得
+        user = get_object_or_404(User, pk=pk)
+
+        mycars_instance = MyCar.objects.filter(user=user).first()
         
-        if my_car:
-            form = TargetFuelForm(request.POST, instance=my_car)
-        
-            if form.is_valid():
-                form.save()  # フォームの内容を保存
-                return redirect('Edrive:home')  # ホーム画面にリダイレクト
+        if mycars_instance:
+            form = TargetFuelForm(request.POST, instance=mycars_instance)
+            
         else:
-            form = TargetFuelForm()
-        # エラーメッセージを設定
-            error_message = "レコードが存在しません。"
+            
+            form = TargetFuelForm(request.POST)
+    
+        if form.is_valid():
+                mycars_instance = form.save(commit=False)
+                mycars_instance.user = user
+                mycars_instance.save()
+                return redirect(reverse_lazy('Edrive:home'))
+
         
         #if form.is_valid():
          #   form.save()  # フォームの内容を保存
           #  return redirect('Edrive:home')  # ホーム画面にリダイレクト
         # フォームが無効な場合は再度フォームとデータをレンダリング
-        average_fuel_efficiency = car_model.average_fuel_efficiency  # 平均燃費量を取得
+        #average_fuel_efficiency = car_model.average_fuel_efficiency  # 平均燃費量を取得
         user_cars = MyCar.objects.filter(user=request.user).select_related('car_model')
         user_car_models = [car.car_model for car in user_cars] 
         
-        car_models = CarModel.objects.all()
         context = {
-            'car_model': car_model,
-            'average_fuel_efficiency': average_fuel_efficiency,
+            #'car_model': car_model,
+            #'average_fuel_efficiency': average_fuel_efficiency,
             'form': form,
             'user_cars': user_cars,
             'car_models': user_car_models,  
+            'mycars_instance':mycars_instance
         }
-        
-        if not my_car:
-           context['error_message'] = error_message
 
         return render(request, self.template_name, context)
 
@@ -515,8 +492,8 @@ class MyCarDetailView(View):
             mycars_instance.user = user
             mycars_instance.save()
             return redirect(reverse_lazy('Edrive:my_car', kwargs={'pk':user.pk}))
-        print(request.POST)  
-        print(form1.errors)
+        #print(request.POST)  
+        #print(form1.errors)
         context = {
             'form1': form1,
             'mycars_instance': mycars_instance

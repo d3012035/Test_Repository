@@ -56,17 +56,17 @@ class RecordsForm(forms.ModelForm):
         
 class MyCarDetailForm(forms.ModelForm):
     
-    manufacturer_id = forms.ModelChoiceField(
-        label = 'メーカー',
-        queryset=Manufacturer.objects.all(),
+    #manufacturer_id = forms.ModelChoiceField(
+    #    label = 'メーカー',
+    #    queryset=Manufacturer.objects.all(),
                 
-        required=True,
-        widget=forms.widgets.Select(attrs={'class': 'form-control'})
-    )
+    #    required=True,
+    #    widget=forms.widgets.Select(attrs={'class': 'form-control'})
+    #)
     
     
     
-    car_model_id = forms.ModelChoiceField(
+    car_model = forms.ModelChoiceField(
         label= '車種',
         queryset=CarModel.objects.all(),
         
@@ -90,7 +90,7 @@ class MyCarDetailForm(forms.ModelForm):
     
     class Meta:
         model = MyCar
-        fields = ['car_model_id', 'purchase_on']
+        fields = ['car_model', 'purchase_on']
             
 
 class MyPageEditForm(forms.ModelForm):
