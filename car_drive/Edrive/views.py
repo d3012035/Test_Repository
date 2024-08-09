@@ -153,7 +153,7 @@ class HomeView(LoginRequiredMixin,View):
                 })
 
         
-        font_family = 'Yu Gothic'            #'IPAexGothic'
+        font_family = 'IPAexGothic'            #'IPAexGothic'
     
         available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
         font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
