@@ -53,12 +53,12 @@
     </div>
         <div class="actual-achievement">
             <h4>実績燃費量</h4>
-    {% for record in fuel_records %}
-         {% if record.fuel_efficiency %}
-          <div class="value">{{ record.fuel_efficiency|floatformat:1 }}km/L</div>
-          {% endif %}
-    {% endfor %}
-   </div>
+            {% if latest_fuel_record %}
+        <div class="value">{{ latest_fuel_record.fuel_efficiency }}km/L</div>
+       {% else %}
+        <div class="value">Latest Fuel Record is None</div>
+       {% endif %}
+         </div>
    <div class="you">
    <img src = "{% get_media_prefix %}you.png"  alt = "葉">
    </div>

@@ -32,6 +32,7 @@ import base64
 from django.http import HttpResponseNotFound
 from matplotlib.font_manager import FontProperties
 import matplotlib.font_manager as fm
+from django.http import JsonResponse
 
 
 
@@ -112,7 +113,7 @@ class HomeView(LoginRequiredMixin,View):
         #   user_instance.target_achievement_count = target_achievement_count
 
         #user_instance.save()
-        
+        latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
         remaining_targets = 5 - user_instance.target_achievement_count
         #else:
         #    my_cars = []
@@ -125,7 +126,7 @@ class HomeView(LoginRequiredMixin,View):
         for record in fuel_records:
             target_efficiency_data.append(record.my_car.target_fuel_efficiency)
             achieved_efficiency_data.append(record.fuel_efficiency)
-            dates.append(record.created_at)
+            dates.append(record.created_at.strftime('%Y-%m-%d'))
         #for my_car in my_cars:
           #  average_fuel_efficiencies.append(my_car.car_model.average_fuel_efficiency)#car_groupのみ取り出すには
          #ユーザーのマイカーからグループを取得
@@ -153,7 +154,7 @@ class HomeView(LoginRequiredMixin,View):
                 })
 
         
-        font_family = 'IPAexGothic'            #'IPAexGothic'
+        font_family = 'Yu Gothic'            #'IPAexGothic'
     
         available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
         font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
@@ -208,6 +209,7 @@ class HomeView(LoginRequiredMixin,View):
             'achieved_efficiency_data': achieved_efficiency_data,
             'average_fuel_efficiencies':average_fuel_efficiencies,
             'graph_url': graph_url,
+            'latest_fuel_record': latest_fuel_record
         }
 
         return render(request, self.template_name, context)
@@ -328,22 +330,26 @@ class RecordsView(View):
         
         form = self.form_class(request.POST)
         if form.is_valid():
-                  distance = float(request.POST['distance'])
-                  fuel_amount = float(request.POST['fuel_amount'])
+                  distance = form.cleaned_data['distance']
+                  fuel_amount = form.cleaned_data['fuel_amount']
                   fuel_efficiency = float(distance) / float(fuel_amount)
+                  created_at = form.cleaned_data['created_at'] 
+                  print("Form Created At:", created_at)
                   my_car = my_cars.first()
                   if my_car:
                     FuelRecord.objects.create(
                        my_car=my_car,    
                        distance=distance,
                        fuel_amount=fuel_amount,
-                       fuel_efficiency=fuel_efficiency
-                )
+                       fuel_efficiency=fuel_efficiency,
+                       created_at=created_at
+                     )
                     
         fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
         target_achievement_count = user.target_achievement_count
         
         latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
+        
         if latest_fuel_record:
             if latest_fuel_record.fuel_efficiency is not None and latest_fuel_record.my_car.target_fuel_efficiency is not None:
                 if latest_fuel_record.fuel_efficiency >= latest_fuel_record.my_car.target_fuel_efficiency:

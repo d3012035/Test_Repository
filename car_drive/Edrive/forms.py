@@ -44,7 +44,7 @@ class TargetFuelForm(forms.ModelForm):
         }
         
 class RecordsForm(forms.ModelForm):
-    created_at = forms.DateTimeField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
+    created_at = forms.DateField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
     distance = forms.FloatField(label = '走行距離(km)')
     fuel_amount = forms.FloatField(label = '給油量(L)')
     
@@ -52,7 +52,7 @@ class RecordsForm(forms.ModelForm):
     
     class Meta:
         model = FuelRecord
-        fields = [ 'distance', 'fuel_amount']
+        fields = [  'distance', 'fuel_amount']
         
 class MyCarDetailForm(forms.ModelForm):
     
