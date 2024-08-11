@@ -6,6 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Home</title>
       <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
    </head>
    
   
@@ -53,7 +54,7 @@
     </div>
         <div class="actual-achievement">
             <h4>実績燃費量</h4>
-            {% if latest_fuel_record %}
+       {% if latest_fuel_record %}
         <div class="value">{{ latest_fuel_record.fuel_efficiency }}km/L</div>
        {% else %}
         <div class="value">Latest Fuel Record is None</div>
@@ -62,6 +63,84 @@
    <div class="you">
    <img src = "{% get_media_prefix %}you.png"  alt = "葉">
    </div>
+   <canvas id="fuelEfficiencyChart" ></canvas>
+    <script>
+        var ctx = document.getElementById('fuelEfficiencyChart').getContext('2d');
+        var targetEfficiencyData = JSON.parse('{{ target_efficiency_data|escapejs }}');
+        var achievedEfficiencyData = JSON.parse('{{ achieved_efficiency_data|escapejs }}');
+        var dates = JSON.parse('{{ dates|escapejs }}');
+        var averageFuelEfficiencies = JSON.parse('{{ average_fuel_efficiencies|escapejs }}');
+
+        var datasets = [
+            {
+                label: '目標燃費',
+                data: targetEfficiencyData,
+                borderColor: 'blue',
+                fill: false
+            },
+            {
+                label: '実績燃費',
+                data: achievedEfficiencyData,
+                borderColor: 'red',
+                fill: false
+            }
+        ];
+
+        averageFuelEfficiencies.forEach(function(groupData) {
+            datasets.push({
+                label: groupData.car_model_name + ' 平均燃費',
+                data: Array(dates.length).fill(groupData.average_fuel_efficiency),
+                borderColor: 'green',
+                borderDash: [5, 5],
+                fill: false
+            });
+        });
+
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: datasets
+            },
+            options: {
+                title: {
+                        display: true,
+                        text: '燃費量',
+                        },  
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '日付',
+                            font: {
+                               size: 100 // x軸のラベルのフォントサイズ
+                            }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 20 // x軸のラベルのフォントサイズ
+                              }
+                            }
+                        },
+                        
+                        y: {
+                          title: {
+                            display: true,
+                            text: '燃費 (km/L)',
+                            font:{
+                              size:30
+                            }
+                          },
+                          ticks: {
+                             font: {
+                                size: 30 // x軸のラベルのフォントサイズ
+                             }
+                          }
+                     }
+                  }
+               }
+           });
+    </script>
    <div class="graph-container">
       <img src="data:image/png;base64,{{ graph_url }}" alt="Fuel Efficiency Graph">
     </div>
@@ -69,8 +148,6 @@
    <div class="you">
    <img src = "{% get_media_prefix %}you.png"  alt = "葉">
    </div>  
-  
-
   
 </div>
 </body>

@@ -150,11 +150,14 @@ class MyCar(BaseModel):
         db_table = 'my_cars'
     
         
-class FuelRecord(BaseModel):
+class FuelRecord(models.Model):
     my_car = models.ForeignKey(MyCar, on_delete=models.CASCADE, default=1)
     distance = models.FloatField(verbose_name="走行距離 (km)")
     fuel_amount = models.FloatField(verbose_name="給油量 (L)")
     fuel_efficiency = models.FloatField(verbose_name="燃費 (km/L)", blank=True, null=True, editable=False)
+    created_at = models.DateTimeField(null=True)  # auto_now_add=True を削除
+    updated_at = models.DateTimeField(null=True)
+    
     
     def save(self, *args, **kwargs):
         if self.distance and self.fuel_amount:

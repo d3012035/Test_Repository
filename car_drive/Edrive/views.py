@@ -33,6 +33,7 @@ from django.http import HttpResponseNotFound
 from matplotlib.font_manager import FontProperties
 import matplotlib.font_manager as fm
 from django.http import JsonResponse
+import json
 
 
 
@@ -95,7 +96,7 @@ class HomeView(LoginRequiredMixin,View):
         
         
         my_cars = MyCar.objects.filter(user=user_instance)if MyCar.objects.filter(user=user_instance).exists() else []
-        fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('created_at') if FuelRecord.objects.filter(my_car__user=user_instance).exists() else []
+        fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('created_at')
         
           
         #remaining_targets = request.session.get('remaining_targets', 5 - user_instance.target_achievement_count)
@@ -154,7 +155,7 @@ class HomeView(LoginRequiredMixin,View):
                 })
 
         
-        font_family = 'Yu Gothic'            #'IPAexGothic'
+        font_family = 'IPAexGothic'            #'IPAexGothic'
     
         available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
         font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
@@ -168,8 +169,8 @@ class HomeView(LoginRequiredMixin,View):
         plt.switch_backend('Agg')  # バックエンドを変更
         fig, ax = plt.subplots()
         
-        ax.plot( dates,target_efficiency_data, label='目標燃費')
-        ax.plot(dates, achieved_efficiency_data, label='実績燃費')
+        ax.plot( dates,target_efficiency_data,color='blue', label='目標燃費')
+        ax.plot(dates, achieved_efficiency_data, color='red',label='実績燃費')
         
         #ax.axhline(y=average_fuel_efficiencies, color='blue', linestyle='--', label=f'平均燃費')
         
@@ -197,7 +198,8 @@ class HomeView(LoginRequiredMixin,View):
         buf.close()
 
         #て保存し、Base64エンコードする
-           
+      
+
         
         context = {
             'user': user_instance,
@@ -205,11 +207,12 @@ class HomeView(LoginRequiredMixin,View):
             'fuel_records': fuel_records,
             'target_achievement_count': user_instance.target_achievement_count,
             'remaining_targets': remaining_targets,
-            'target_efficiency_data': target_efficiency_data,
-            'achieved_efficiency_data': achieved_efficiency_data,
-            'average_fuel_efficiencies':average_fuel_efficiencies,
+            'target_efficiency_data': json.dumps(target_efficiency_data),
+            'achieved_efficiency_data': json.dumps(achieved_efficiency_data),
+            'average_fuel_efficiencies':json.dumps(average_fuel_efficiencies),
             'graph_url': graph_url,
-            'latest_fuel_record': latest_fuel_record
+            'latest_fuel_record': latest_fuel_record,
+            'dates': json.dumps(dates),
         }
 
         return render(request, self.template_name, context)
