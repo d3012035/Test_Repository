@@ -87,12 +87,28 @@
         ];
 
         averageFuelEfficiencies.forEach(function(groupData) {
+            let borderColor;
+
+            if (groupData.engine_type === 'gasoline') {
+                borderColor = 'green';  // ガソリン車の平均燃費
+            } else if (groupData.engine_type === 'hybrid') {
+                borderColor = 'orange';  // ハイブリッド車の平均燃費
+            } else {
+                return;  // ガソリン車やハイブリッド車でない場合はスキップ
+            }
+
+            let extendedData = Array(dates.length).fill(groupData.average_fuel_efficiency);
+            if (dates.length === 1) {
+                extendedData.push(groupData.average_fuel_efficiency);  // 同じ値を2回追加
+                dates.push(dates[0]);  // ダミーの日付を追加
+            }
+
             datasets.push({
                 label: groupData.car_model_name + ' 平均燃費',
                 data: Array(dates.length).fill(groupData.average_fuel_efficiency),
-                borderColor: 'green',
+                borderColor: borderColor,
                 borderDash: [5, 5],
-                fill: false
+                fill: false,
             });
         });
 
@@ -103,43 +119,40 @@
                 datasets: datasets
             },
             options: {
+                legend: {
+                    labels: {
+                        fontSize: 20 // 凡例（ラベル）の文字サイズを設定
+                    }
+                  },
                 title: {
                         display: true,
                         text: '燃費量',
+                        fontSize: 30
                         },  
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: '日付',
-                            font: {
-                               size: 100 // x軸のラベルのフォントサイズ
-                            }
-                            },
+                        scales: {
+                           xAxes: [{
+                             scaleLabel: {
+                                display: true,
+                                labelString: '日付',
+                                fontSize: 30  // x軸のラベルのフォントサイズ
+                             },
                             ticks: {
-                                font: {
-                                    size: 20 // x軸のラベルのフォントサイズ
+                                  fontSize: 30 // x軸のティックラベルのフォントサイズ
                               }
-                            }
-                        },
-                        
-                        y: {
-                          title: {
-                            display: true,
-                            text: '燃費 (km/L)',
-                            font:{
-                              size:30
-                            }
-                          },
-                          ticks: {
-                             font: {
-                                size: 30 // x軸のラベルのフォントサイズ
-                             }
-                          }
-                     }
-                  }
-               }
-           });
+                             }],
+                           yAxes: [{
+                            scaleLabel: {
+                                 display: true,
+                                 labelString: '燃費 (km/L)',
+                                 fontSize: 30  // y軸のラベルのフォントサイズ
+                                  },
+                               ticks: {
+                                    fontSize: 30 // y軸のティックラベルのフォントサイズ
+                                       }
+                                     }]
+                                 }
+                                }
+                            });
     </script>
    <div class="graph-container">
       <img src="data:image/png;base64,{{ graph_url }}" alt="Fuel Efficiency Graph">

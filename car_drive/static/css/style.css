@@ -975,6 +975,6 @@ input[type="submit"]:hover {
 }
 
 #fuelEfficiencyChart {
-    width: 600px !important;  /* 幅を400pxに設定 */
+    width: 700px !important;  /* 幅を400pxに設定 */
     height: 400px !important; /* 高さを200pxに設定 */
 }

@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
@@ -155,8 +157,9 @@ class FuelRecord(models.Model):
     distance = models.FloatField(verbose_name="走行距離 (km)")
     fuel_amount = models.FloatField(verbose_name="給油量 (L)")
     fuel_efficiency = models.FloatField(verbose_name="燃費 (km/L)", blank=True, null=True, editable=False)
-    created_at = models.DateTimeField(null=True)  # auto_now_add=True を削除
-    updated_at = models.DateTimeField(null=True)
+    date = models.DateField(verbose_name="日付", default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)  # auto_now_add=True を削除
+    updated_at = models.DateTimeField(auto_now=True,null=True)
     
     
     def save(self, *args, **kwargs):

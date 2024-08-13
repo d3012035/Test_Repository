@@ -96,7 +96,7 @@ class HomeView(LoginRequiredMixin,View):
         
         
         my_cars = MyCar.objects.filter(user=user_instance)if MyCar.objects.filter(user=user_instance).exists() else []
-        fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('created_at')
+        fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('date')
         
           
         #remaining_targets = request.session.get('remaining_targets', 5 - user_instance.target_achievement_count)
@@ -127,7 +127,7 @@ class HomeView(LoginRequiredMixin,View):
         for record in fuel_records:
             target_efficiency_data.append(record.my_car.target_fuel_efficiency)
             achieved_efficiency_data.append(record.fuel_efficiency)
-            dates.append(record.created_at.strftime('%Y-%m-%d'))
+            dates.append(record.date.strftime('%Y-%m-%d'))
         #for my_car in my_cars:
           #  average_fuel_efficiencies.append(my_car.car_model.average_fuel_efficiency)#car_groupのみ取り出すには
          #ユーザーのマイカーからグループを取得
@@ -151,17 +151,19 @@ class HomeView(LoginRequiredMixin,View):
             for car_model in car_models_in_group:
                 average_fuel_efficiencies.append({
                     'car_model_name': car_model.car_model_name,
-                    'average_fuel_efficiency': car_model.average_fuel_efficiency
+                    'average_fuel_efficiency': car_model.average_fuel_efficiency,
+                    'engine_type': car_model.engine_type,  # car_typeを追加
+                    'car_group': car_model.car_group,  # car_groupも追加
                 })
 
         
-        font_family = 'IPAexGothic'            #'IPAexGothic'
+        #font_family = 'IPAexGothic'            #'IPAexGothic'
     
         available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
         font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
 
-        if font_family not in font_names:
-           raise ValueError(f"Font family '{font_family}' not found in the system. Please install it first.")
+        #if font_family not in font_names:
+        #   raise ValueError(f"Font family '{font_family}' not found in the system. Please install it first.")
 
             
         
@@ -186,10 +188,10 @@ class HomeView(LoginRequiredMixin,View):
     
 
         
-        ax.set_xlabel('日付', family=font_family, fontsize=9)
-        ax.set_ylabel('燃費 (km/L)', family=font_family, fontsize=11)
-        ax.set_title('燃費量',family=font_family)
-        ax.legend(prop={'family': font_family})
+        #ax.set_xlabel('日付', family=font_family, fontsize=9)
+        #ax.set_ylabel('燃費 (km/L)', family=font_family, fontsize=11)
+        #ax.set_title('燃費量',family=font_family)
+        #ax.legend(prop={'family': font_family})
 
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
@@ -336,8 +338,7 @@ class RecordsView(View):
                   distance = form.cleaned_data['distance']
                   fuel_amount = form.cleaned_data['fuel_amount']
                   fuel_efficiency = float(distance) / float(fuel_amount)
-                  created_at = form.cleaned_data['created_at'] 
-                  print("Form Created At:", created_at)
+                  date = form.cleaned_data['date'] 
                   my_car = my_cars.first()
                   if my_car:
                     FuelRecord.objects.create(
@@ -345,7 +346,7 @@ class RecordsView(View):
                        distance=distance,
                        fuel_amount=fuel_amount,
                        fuel_efficiency=fuel_efficiency,
-                       created_at=created_at
+                       date=date
                      )
                     
         fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
