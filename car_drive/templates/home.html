@@ -57,7 +57,7 @@
        {% if latest_fuel_record %}
         <div class="value">{{ latest_fuel_record.fuel_efficiency }}km/L</div>
        {% else %}
-        <div class="value">Latest Fuel Record is None</div>
+        <div class="value">None</div>
        {% endif %}
          </div>
    <div class="you">
@@ -154,9 +154,6 @@
                                 }
                             });
     </script>
-   <div class="graph-container">
-      <img src="data:image/png;base64,{{ graph_url }}" alt="Fuel Efficiency Graph">
-    </div>
    </div>
    <div class="you">
    <img src = "{% get_media_prefix %}you.png"  alt = "葉">
