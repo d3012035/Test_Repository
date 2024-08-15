@@ -44,8 +44,15 @@ class TargetFuelForm(forms.ModelForm):
         }
         
 class RecordsForm(forms.ModelForm):
-    distance = forms.FloatField(label = '走行距離(km)')
-    fuel_amount = forms.FloatField(label = '給油量(L)')
+    distance = forms.FloatField(label = '走行距離(km)', widget=forms.NumberInput(attrs={
+            'min': 0,   # 最小値を設定
+            'max': 3000  # 最大値を設定
+        }))
+    fuel_amount = forms.FloatField(label = '給油量(L)',
+        widget=forms.NumberInput(attrs={
+            'min': 0,   # 最小値を設定
+            'max': 200   # 最大値を設定
+        }))
     date = forms.DateField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
     
     
