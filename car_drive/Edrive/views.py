@@ -99,31 +99,44 @@ class HomeView(LoginRequiredMixin,View):
         fuel_records = FuelRecord.objects.filter(my_car__user=user_instance, fuel_efficiency__isnull=False).order_by('date')
         
         # マイカーの車種IDリストを作成
-        car_model_ids = my_cars.values_list('car_model__id', flat=True)
+        #car_model_ids = my_cars.values_list('car_model__id', flat=True)
 
         # マイカーの車種名に基づいて、ガソリン車とハイブリッド車の平均燃費を取得
-        car_models = CarModel.objects.filter(
-           id__in=car_model_ids,
-           engine_type__in=['gasoline', 'hybrid']
-         ).values('car_model_name', 'average_fuel_efficiency', 'engine_type')
+        #car_models = CarModel.objects.filter(
+        #   id__in=car_model_ids,
+        #   engine_type__in=['gasoline', 'hybrid']
+        # ).values('car_model_name', 'average_fuel_efficiency', 'engine_type')
 
         
         # 平均燃費リストの作成
-        average_fuel_efficiencies = []
-
-        for car_model in car_models:
-            car_model_name = car_model['car_model_name']
-    
-
-        # 対応する車種の平均燃費をリストに追加
-        average_fuel_efficiencies.append({
-                    'car_model_name': car_model_name, 
-                    'average_fuel_efficiency': car_model['average_fuel_efficiency'],
-                    'engine_type': car_model['engine_type']
-        })
+        
+        average_fuel = []
+        for my_car in my_cars:
+           car_model_name = my_car.car_model.car_model_name
+           
+            # ガソリン車とハイブリッド車の両方を取得
+           gasoline_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='gasoline').first()
+           hybrid_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='hybrid').first()
+           # ガソリン車の平均燃費を追加
+           
+           if gasoline_model:
+               average_fuel.append({
+                  'car_model_name': gasoline_model.car_model_name,
+                  'average_fuel_efficiency': gasoline_model.average_fuel_efficiency,
+                  'engine_type': gasoline_model.engine_type,
+               })
+        
+           # ハイブリッド車の平均燃費を追加
+           
+           if hybrid_model:
+              average_fuel.append({
+                 'car_model_name': hybrid_model.car_model_name,
+                 'average_fuel_efficiency': hybrid_model.average_fuel_efficiency,
+                 'engine_type': hybrid_model.engine_type,
+                 })
 
         # デバッグ用に出力
-        print(average_fuel_efficiencies)
+        print(average_fuel)
     
 
         latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
@@ -157,19 +170,35 @@ class HomeView(LoginRequiredMixin,View):
         car_groups = set(car_groups)
 
         # 各グループに属する車種ごとの平均燃費を取得
-        
-        if my_car:
-             car_group = my_car.car_model.car_group
-             average_fuel_efficiency_all = FuelRecord.objects.filter(
-                my_car__car_model__car_group=car_group
-        ).aggregate(average_fuel_efficiency=Avg('fuel_efficiency'))['average_fuel_efficiency']
+        average_fuel_efficiencies = []
+        for group in car_groups:
+            car_models_in_group = CarModel.objects.filter(car_group=group)
+            for car_model in car_models_in_group:
+                average_fuel_efficiencies.append({
+                    'car_model_name': car_model.car_model_name,
+                    'average_fuel_efficiency': car_model.average_fuel_efficiency,
+                    'engine_type': car_model.engine_type,  # car_typeを追加
+                    'car_group': car_model.car_group,  # car_groupも追加
+                })
+        average_fuel_efficiency_all = []
+        if my_cars:
+            my_car = my_cars.first()  # マイカーを取得
+            if my_car:
+               car_group = my_car.car_model.car_group
+               print(f'Car Group: {car_group}')
+               if car_group:
+                   average_fuel_efficiency_all = CarModel.objects.filter(
+                      car_group=car_group
+                   ).aggregate(average_fuel_efficiency=Avg('average_fuel_efficiency'))['average_fuel_efficiency']
+                   print(f'Average Fuel Efficiency All: {average_fuel_efficiency_all}')  # デバッグ用: 平均燃費の確認
+               else:
+                  print('Car Group is None')
+            else:
+              print('No My Car Found')
         else:
-             average_fuel_efficiency_all = None
-        #font_family = 'IPAexGothic'            #'IPAexGothic'
-    
-        available_fonts = fm.findSystemFonts(fontpaths=None, fontext='ttf')
-        font_names = [fm.FontProperties(fname=font).get_name() for font in available_fonts]
-
+           average_fuel_efficiency_all = None
+        
+        
         #if font_family not in font_names:
         #   raise ValueError(f"Font family '{font_family}' not found in the system. Please install it first.")
 
@@ -209,7 +238,7 @@ class HomeView(LoginRequiredMixin,View):
 
         #て保存し、Base64エンコードする
       
-
+        print(average_fuel_efficiency_all)
         
         context = {
             'user': user_instance,
@@ -224,6 +253,7 @@ class HomeView(LoginRequiredMixin,View):
             'latest_fuel_record': latest_fuel_record,
             'dates': json.dumps(dates),
             'average_fuel_efficiency_all': json.dumps(average_fuel_efficiency_all),
+            'average_fuel': json.dumps(average_fuel),
         }
 
         return render(request, self.template_name, context)
@@ -371,33 +401,48 @@ class RecordsView(View):
                   date = form.cleaned_data['date'] 
                   my_car = my_cars.first()
                   if my_car:
-                    FuelRecord.objects.create(
-                       my_car=my_car,    
-                       distance=distance,
-                       fuel_amount=fuel_amount,
-                       fuel_efficiency=fuel_efficiency,
-                       date=date
-                     )
+                      # 既存のレコードを検索
+                     existing_record = FuelRecord.objects.filter(
+                            my_car=my_car,
+                            date=date
+                      ).first()
+
+                     if existing_record:
+                        # 既存のレコードがあれば更新する
+                        existing_record.distance = distance
+                        existing_record.fuel_amount = fuel_amount
+                        existing_record.fuel_efficiency = fuel_efficiency
+                        existing_record.save()
+                     else:
+                        # 新しいレコードを作成する
+                        FuelRecord.objects.create(
+                              my_car=my_car,
+                              distance=distance,
+                              fuel_amount=fuel_amount,
+                              fuel_efficiency=fuel_efficiency,
+                              date=date
+                           )
+
                     
-                    fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
-                    target_achievement_count = user.target_achievement_count
+                     fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
+                     target_achievement_count = user.target_achievement_count
         
-                    latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
+                     latest_fuel_record = fuel_records.last() if fuel_records.exists() else None
         
-                    if latest_fuel_record:
+                     if latest_fuel_record:
                         if latest_fuel_record.fuel_efficiency is not None and latest_fuel_record.my_car.target_fuel_efficiency is not None:
                          if latest_fuel_record.fuel_efficiency >= latest_fuel_record.my_car.target_fuel_efficiency:
                               target_achievement_count += 1
 
-                    if target_achievement_count >= 5:
+                     if target_achievement_count >= 5:
                           user.driver_level += 1
                           user.target_achievement_count = target_achievement_count - 5  # レベルアップした分を引く
-                    else:
+                     else:
                         user.target_achievement_count = target_achievement_count
 
-                    user.save()
+                     user.save()
 
-                    remaining_targets = 5 - user.target_achievement_count
+                     remaining_targets = 5 - user.target_achievement_count
 
 
         #return render(request, self.template_name, {'user':user,'fuel_records': fuel_records, 'form': form, 'car_id': pk, 'remaining_targets': remaining_targets})

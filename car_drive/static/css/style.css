@@ -826,7 +826,7 @@ input[type="submit"]:hover {
     margin-left: 40px;
     /* パラグラフ要素の左マージンを設定 */
     margin-right: 70px;
-    margin-top: 40px;
+    margin-top: 10px;
 }
 
 /* 新たに追加するスタイル */
@@ -914,10 +914,9 @@ input[type="submit"]:hover {
     margin-top: 50px;
 }
 .achievement-text {
-    position: absolute;
-    margin-top: 40%; /* 上端から50%の位置に配置 */
+    position: relative;
+    margin-top: 20%;/* 上端から50%の位置に配置 */
     margin-left: 71%; /* 左端から50%の位置に配置 */
-    transform: translate(-50%, -50%); /* 中央に揃える */
     color: black; /* テキストの色 */
     font-size: 16px;
     text-align: right; /* 中央揃え */

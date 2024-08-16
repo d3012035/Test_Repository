@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 from django.urls import reverse_lazy
 
 
+
 class UserManager(BaseUserManager):
     def create_user(self,  email, password=None, **extra_fields):
         if not email:
@@ -172,6 +173,16 @@ class FuelRecord(models.Model):
     
     class Meta:
         db_table = 'fuel_records'
+        #unique_together = ('my_car', 'date')  # 複合ユニーク制約を追加
+        constraints = [
+            models.UniqueConstraint(
+                name='records_unique',
+                fields=[
+                    'my_car',
+                    'date',
+                ]
+            )
+        ]
         
 class EcoDriveSite(BaseModel):
     ecodrive_url = models.CharField(max_length=260)

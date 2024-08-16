@@ -69,16 +69,9 @@
         var targetEfficiencyData = JSON.parse('{{ target_efficiency_data|escapejs }}');
         var achievedEfficiencyData = JSON.parse('{{ achieved_efficiency_data|escapejs }}');
         var dates = JSON.parse('{{ dates|escapejs }}');
-        var averageFuelEfficiencies = JSON.parse('{{ average_fuel_efficiencies|escapejs }}');
         var averageFuelEfficiencyAll = JSON.parse('{{ average_fuel_efficiency_all|escapejs }}');
+        var averageFuel = JSON.parse('{{ average_fuel|escapejs }}');
         
-        // データが正しく取得されているか確認
-        console.log('targetEfficiencyData:', targetEfficiencyData);
-        console.log('achievedEfficiencyData:', achievedEfficiencyData);
-        console.log('dates:', dates);
-        console.log('averageFuelEfficiencies:', averageFuelEfficiencies);
-        console.log('averageFuelEfficiencyAll:', averageFuelEfficiencyAll);
-
         var datasets = [
             {
                 label: '目標燃費',
@@ -94,31 +87,29 @@
             }
         ];
 
-        // 登録された車種に一致するガソリン車とハイブリッド車のデータを追加
-        averageFuelEfficiencies.forEach(function(groupData) {
-                let borderColor;
+        averageFuel.forEach(function(car) {
+        let borderColor;
 
-                if (groupData.engine_type === 'gasoline') {
-                    borderColor = 'green';  // ガソリン車の平均燃費
-                } else if (groupData.engine_type === 'hybrid') {
-                    borderColor = 'orange';  // ハイブリッド車の平均燃費
-                } else {
-                    return;  // ガソリン車やハイブリッド車でない場合はスキップ
-                }
+        if (car.engine_type === 'gasoline') {
+            borderColor = 'orange';  // ガソリン車の平均燃費
+        } else if (car.engine_type === 'hybrid') {
+            borderColor = 'green';  // ハイブリッド車の平均燃費
+        } else {
+            return;  // ガソリン車やハイブリッド車でない場合はスキップ
+        }
 
-            
+        datasets.push({
+            label: car.car_model_name + ' 平均燃費',
+            data: Array(dates.length).fill(car.average_fuel_efficiency),
+            borderColor: borderColor,
+            borderDash: [10, 5],
+            fill: false,
+        });
+       });
 
-               datasets.push({
-                label: groupData.car_model_name + ' 平均燃費',
-                data: Array(dates.length).fill(groupData.average_fuel_efficiency),
-                borderColor: borderColor,
-                borderDash: [5, 5],
-                fill: false,
-             });
-            
-         });
+        
 
-            if (averageFuelEfficiencyAll !== null) {
+        if (averageFuelEfficiencyAll !== null) {
                     datasets.push({
                         label: '同じ車種の全体平均燃費',
                         data: Array(dates.length).fill(averageFuelEfficiencyAll),
