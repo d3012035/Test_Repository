@@ -55,7 +55,7 @@
         <div class="actual-achievement">
             <h4>実績燃費量</h4>
        {% if latest_fuel_record %}
-        <div class="value">{{ latest_fuel_record.fuel_efficiency }}km/L</div>
+        <div class="value">{{ latest_fuel_record.fuel_efficiency|floatformat:1 }}km/L</div>
        {% else %}
         <div class="value">None</div>
        {% endif %}
