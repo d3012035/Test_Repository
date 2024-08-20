@@ -756,7 +756,7 @@ input[type="submit"]:hover {
 }
 
 .target-achievement, .actual-achievement {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .target-achievement h4, .actual-achievement h4 {
@@ -772,7 +772,7 @@ input[type="submit"]:hover {
     display: inline-block;
     margin-top: 50px;
     margin-left: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     line-height: 150px; /* 高さに合わせて調整 */
     width: 150px ; /* 丸の幅 */
     height: 150px ; /* 丸の高さ */
@@ -892,8 +892,13 @@ input[type="submit"]:hover {
     justify-content: space-between;
     align-items: flex-start; /* 上揃えにします */
     margin-top: 20px;
-    margin-bottom: 10px;
-    padding: 20px;
+    margin-bottom: 0;
+    padding: 1px;
+    box-sizing: border-box; /* paddingとborderが要素の全体の幅に含まれるようにする */
+}
+
+.achievement-container .inner-element {
+    padding: 10px; /* 内部要素のパディングを調整 */
 }
 
 .target-achievement,
@@ -905,7 +910,7 @@ input[type="submit"]:hover {
 .you img{
     width:90px;
     height: 90px; 
-    margin-left: 60px;
+    margin-left: 40px;
     margin-top: 0;
  /* ロゴとナビゲーションの間のスペース */
 }
