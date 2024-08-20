@@ -27,9 +27,20 @@
       {% block content %}{% endblock %}
    
    <div class="target">
+   {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+   {% endif %}
+   <p>車種が未登録の方は「マイカー画面」で先にマイカーを登録してください</p>
    {% if my_car %}
    <h4>{{ my_car.car_model.car_model_name }}の平均燃費量 {{ my_car.car_model.average_fuel_efficiency }} km/L</h4>
    {% endif %}
+
 <label for="target_fuel_efficiency">目標燃費量</label>
    <nav>
         <form method="POST">

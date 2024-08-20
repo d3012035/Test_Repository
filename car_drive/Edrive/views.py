@@ -34,6 +34,7 @@ from matplotlib.font_manager import FontProperties
 import matplotlib.font_manager as fm
 from django.http import JsonResponse
 import json
+from django.contrib import messages
 
 
 
@@ -112,15 +113,17 @@ class HomeView(LoginRequiredMixin,View):
         
         average_fuel = []
         for my_car in my_cars:
-           car_model_name = my_car.car_model.car_model_name
+            # my_car が None でないこと、および car_model が存在することを確認
+           if my_car and my_car.car_model:
+             car_model_name = my_car.car_model.car_model_name
            
             # ガソリン車とハイブリッド車の両方を取得
-           gasoline_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='gasoline').first()
-           hybrid_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='hybrid').first()
+             gasoline_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='gasoline').first()
+             hybrid_model = CarModel.objects.filter(car_model_name__icontains=car_model_name.split('(')[0], engine_type='hybrid').first()
            # ガソリン車の平均燃費を追加
            
-           if gasoline_model:
-               average_fuel.append({
+             if gasoline_model:
+                average_fuel.append({
                   'car_model_name': gasoline_model.car_model_name,
                   'average_fuel_efficiency': gasoline_model.average_fuel_efficiency,
                   'engine_type': gasoline_model.engine_type,
@@ -128,12 +131,15 @@ class HomeView(LoginRequiredMixin,View):
         
            # ハイブリッド車の平均燃費を追加
            
-           if hybrid_model:
+             if hybrid_model:
               average_fuel.append({
                  'car_model_name': hybrid_model.car_model_name,
                  'average_fuel_efficiency': hybrid_model.average_fuel_efficiency,
                  'engine_type': hybrid_model.engine_type,
                  })
+        else:
+        # マイカーやカーモデルが存在しない場合の処理（必要に応じて）
+            pass
 
         # デバッグ用に出力
         print(average_fuel)
@@ -163,9 +169,14 @@ class HomeView(LoginRequiredMixin,View):
         # ユーザーのマイカーの車種のグループを取得
         car_groups = []
         for my_car in my_cars:
-            car_group = my_car.car_model.car_group
-            car_groups.append(car_group)
-
+            if my_car and my_car.car_model:
+              car_group = my_car.car_model.car_group
+              car_groups.append(car_group)
+            else:
+        # my_car または my_car.car_model が None の場合の処理
+              messages.error(request, "車のモデル情報が見つかりません。車を登録してください。")
+              return redirect('Edrive:mycar_detail', user.pk)  # 例: 車登録ページにリダイレクト
+            
         # 重複を排除するためにセットに変換
         car_groups = set(car_groups)
 
@@ -184,6 +195,7 @@ class HomeView(LoginRequiredMixin,View):
         if my_cars:
             my_car = my_cars.first()  # マイカーを取得
             if my_car:
+               print(f"my_car: {my_car}")
                car_group = my_car.car_model.car_group
                print(f'Car Group: {car_group}')
                if car_group:
@@ -376,29 +388,25 @@ class RecordsView(View):
         if form.is_valid():
                   distance = form.cleaned_data['distance']
                   fuel_amount = form.cleaned_data['fuel_amount']
-                  min_distance = 0.0  # 距離の最小値
-                  max_distance = 3000.0  # 距離の最大値
-                  min_fuel_amount = 0.0  # 給油量の最小値
-                  max_fuel_amount = 200.0  # 給油量の最大値
+                  date = form.cleaned_data['date']
+                  #min_distance = 1.0  # 距離の最小値
+                  #max_distance = 3000.0  # 距離の最大値
+                  #min_fuel_amount = 1.0  # 給油量の最小値
+                  #max_fuel_amount = 200.0  # 給油量の最大値
 
                   # distance を範囲内に収める
-                  distance = max(min_distance, min(distance, max_distance))
+                  #distance = max(min_distance, min(distance, max_distance))
 
                   # fuel_amount を範囲内に収める
-                  fuel_amount = max(min_fuel_amount, min(fuel_amount, max_fuel_amount))
-                  # fuel_amount がゼロの場合、fuel_efficiency はゼロとする
-                  if fuel_amount > 0:
-                     fuel_efficiency = float(distance) / float(fuel_amount)
-                  else:
-                     fuel_efficiency = 0.0  # fuel_amount がゼロの場合のデフォルト値
+                  #fuel_amount = max(min_fuel_amount, min(fuel_amount, max_fuel_amount))
+                  fuel_efficiency = float(distance) / float(fuel_amount)
                   
-                  min_fuel_efficiency = 0.0  # 最小値
+                  min_fuel_efficiency = 1.0  # 最小値
                   max_fuel_efficiency = 10000.0  # 最大値
 
                   # fuel_efficiency を範囲内に収める
                   fuel_efficiency = max(min_fuel_efficiency, min(fuel_efficiency, max_fuel_efficiency))
                   
-                  date = form.cleaned_data['date'] 
                   my_car = my_cars.first()
                   if my_car:
                       # 既存のレコードを検索
@@ -460,7 +468,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         # ユーザーのIDを取得
         user_id = request.user.id
 
-
+        user = request.user
         my_car = MyCar.objects.filter(user=request.user).first()
         if my_car:
             average_fuel_efficiency = my_car.car_model.average_fuel_efficiency
@@ -480,26 +488,31 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         return render(request, self.template_name, context)
 
     def post(self, request,  *args, **kwargs):
-        #car_model = get_object_or_404(CarModel, pk=kwargs.get('pk'))
-        pk = kwargs.get('pk')
-        # pk でユーザーを取得
-        user = get_object_or_404(User, pk=pk)
-
+        
+        user = request.user
+        
         mycars_instance = MyCar.objects.filter(user=user).first()
         
-        if mycars_instance:
-            form = TargetFuelForm(request.POST, instance=mycars_instance)
-            
-        else:
-            
+        # 初期化を保証するために空のフォームを準備
+        #form = TargetFuelForm(request.POST, instance=mycars_instance) if mycars_instance else TargetFuelForm(request.POST)
+        # マイカーが登録されていない場合
+        if not mycars_instance:
             form = TargetFuelForm(request.POST)
+            # エラーメッセージを表示し、マイカー登録ページにリダイレクト
+            return redirect(reverse_lazy('Edrive:mycar_detail', kwargs={'pk': user.pk})) # マイカー登録ページにリダイレクト
+    
+    
+        # マイカーが登録されている場合はフォームを処理
+        form = TargetFuelForm(request.POST, instance=mycars_instance)
     
         if form.is_valid():
-                mycars_instance = form.save(commit=False)
-                mycars_instance.user = user
-                mycars_instance.save()
-                return redirect(reverse_lazy('Edrive:home'))
-
+               mycars_instance = form.save(commit=False)
+               mycars_instance.user = user
+               mycars_instance.save()
+               return redirect(reverse_lazy('Edrive:home'))
+            
+        print(mycars_instance)
+        
         
         #if form.is_valid():
          #   form.save()  # フォームの内容を保存
@@ -519,6 +532,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         }
 
         return render(request, self.template_name, context)
+    
 
     #def get_context_data(self, **kwargs):
     #    context = super().get_context_data(**kwargs)

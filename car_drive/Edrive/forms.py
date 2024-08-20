@@ -2,6 +2,7 @@ from django import forms
 from .models import  MyCar, FuelRecord, User, CarModel, Manufacturer
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
     
@@ -43,16 +44,30 @@ class TargetFuelForm(forms.ModelForm):
             'target_fuel_efficiency': forms.NumberInput(attrs={'step': '0.1'}),
         }
         
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        # インスタンスが存在しない場合はスキップ
+        if not self.instance.pk:
+            return cleaned_data
+
+        # インスタンスに関連するユーザーをチェック
+        if not self.instance.user:
+            raise ValidationError('関連するユーザーが存在しません。')
+        
+        return cleaned_data
+    
+    
 class RecordsForm(forms.ModelForm):
-    distance = forms.FloatField(label = '走行距離(km)', widget=forms.NumberInput(attrs={
-            'min': 0,   # 最小値を設定
-            'max': 3000  # 最大値を設定
-        }))
-    fuel_amount = forms.FloatField(label = '給油量(L)',
-        widget=forms.NumberInput(attrs={
-            'min': 0,   # 最小値を設定
-            'max': 200   # 最大値を設定
-        }))
+    distance = forms.FloatField(label = '走行距離(km)', min_value=1.0, max_value=3000.0, error_messages={
+        'min_value': '距離は1以上でなければなりません。',
+        'max_value': '距離は3000以下でなければなりません。',
+        })
+    fuel_amount = forms.FloatField(label = '給油量(L)',min_value=1.0, max_value=200.0, error_messages={
+        'min_value': '給油量は1以上でなければなりません。',
+        'max_value': '給油量は200以下でなければなりません。',
+        
+        })
     date = forms.DateField(label = '', widget=forms.DateInput(attrs={'type': 'date'}))
     
     

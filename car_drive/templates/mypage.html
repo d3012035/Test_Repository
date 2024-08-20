@@ -35,10 +35,10 @@
    </head>
   <body class="my_page">
     <h3>マイページ</h3>
-    <h4>名前/ニックネーム:{{ user.user_name }}</h4>
-    <h4>運転免許証:{{ user.licence_expiry_on|default:"未設定" }}</h4>
-    <h4>オイル交換:{{ mycars_instance.next_oil_change_on|default:"未設定" }}</h4>
-    <h4>車検:{{ mycars_instance.next_inspection_on|default:"未設定" }}
+    <h4>名前/ニックネーム:{{ user.user_name|default:"未設定"  }}</h4>
+    <h4>運転免許証 次回:{{ user.licence_expiry_on|default:"未設定" }}</h4>
+    <h4>オイル交換 次回:{{ mycars_instance.next_oil_change_on|default:"未設定" }}</h4>
+    <h4>車検 次回:{{ mycars_instance.next_inspection_on|default:"未設定" }}
     <a class="navbar-brand" href="{% url 'Edrive:mypage_edit' user.pk %}">編集</a>
     </h4>
     

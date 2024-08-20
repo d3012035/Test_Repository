@@ -790,21 +790,23 @@ input[type="submit"]:hover {
 
 .nav-links {
     display: flex;
-    justify-content:left;
+    justify-content: flex-start; /* 子要素を左揃えにする */
     margin-top:5px;
 }
 
 .nav-links .navbar-brand {
-    padding: 10px 20px; /* パディングを設定 */
+    padding: 10px 30px; /* パディングを設定 */
     color: #208b40;
     font-size: 20px;
     text-align: left;
     text-decoration: none; /* リンクの下線を消す */
-    margin-bottom: 300px;/* リンクを中央に配置 */
+    margin-bottom: 0;/* リンクを中央に配置 */
     display: block;
     border-radius: 5px;
-    margin-left: 70px;
-    margin-top: 0;
+    margin-left: 0;
+    margin-top: 30px;
+    margin-right: 250px;
+    padding-right: 20px;
 }
 
 
@@ -823,9 +825,9 @@ input[type="submit"]:hover {
 }
 
 .achievement-info p {
-    margin-left: 40px;
+    margin-left: 30px;
     /* パラグラフ要素の左マージンを設定 */
-    margin-right: 70px;
+    margin-right: 100px;
     margin-top: 10px;
 }
 
@@ -890,7 +892,7 @@ input[type="submit"]:hover {
     justify-content: space-between;
     align-items: flex-start; /* 上揃えにします */
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     padding: 20px;
 }
 
@@ -903,23 +905,28 @@ input[type="submit"]:hover {
 .you img{
     width:90px;
     height: 90px; 
-    margin-left: 40px;
+    margin-left: 60px;
     margin-top: 0;
  /* ロゴとナビゲーションの間のスペース */
 }
 
 .shape img{
+    position: relative;
+    display: inline-block;
     width:150px;
     height: 150px;
     margin-top: 50px;
 }
 .achievement-text {
-    position: relative;
-    margin-top: 20%;/* 上端から50%の位置に配置 */
-    margin-left: 71%; /* 左端から50%の位置に配置 */
+    position: absolute;
+    top: 55%;
+    left: 70%;
+    transform: translate(-50%, -50%);
     color: black; /* テキストの色 */
     font-size: 16px;
-    text-align: right; /* 中央揃え */
+    text-align: center; /* テキストを中央揃え */
+    width: 100%; /* 必要に応じて調整 */
+    padding: 0; /* パディングをリセット */
 }
 
 .portfolio {
