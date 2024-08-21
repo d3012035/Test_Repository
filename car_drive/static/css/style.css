@@ -146,7 +146,7 @@ header h1 {
     justify-content: space-around;
     align-items: center;
     padding: 0;
-    margin: 10px 0 0 0;
+    margin: 0;
 }
 
 nav ul li {
@@ -401,7 +401,7 @@ input[type="submit"]:hover {
     width: auto; /* カラムの幅を50%に設定 */
 }
 
-.my_page .navbar-brand{
+.my_page .navbar-b{
     color: #208b40; /* リンクのテキスト色を指定 */
     text-decoration: none;
      /* 下線をなしにする */
@@ -410,10 +410,17 @@ input[type="submit"]:hover {
     margin-left: 30px;
 }
 
-.my_page h3, .my_page h4{
+.my_page h3{
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+.my_page h4{
     text-align: center;
     margin-top: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     font-weight: normal;
 }
 
@@ -456,14 +463,14 @@ input[type="submit"]:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    margin: 0;
+    min-height: 70vh;
+    margin-top: 0;
     font-family: Arial, sans-serif;
 }
 
 .detail-container form {
     width: 50%; /* フォームを親コンテナの幅に合わせる */
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 }
 
 .detail-container form .form-group {
@@ -518,11 +525,11 @@ input[type="submit"]:hover {
 
 .edit form {
     width: 40%; /* フォームを親コンテナの幅に合わせる */
-    margin-bottom: 50px;
+    margin: 0;
 }
 
 .edit form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .edit form label {
@@ -539,7 +546,7 @@ input[type="submit"]:hover {
     border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .edit form input[type="submit"] {
@@ -549,7 +556,7 @@ input[type="submit"]:hover {
     cursor: pointer;
     font-size: 16px;
     text-align: center;
-    margin: 20px auto; /* ボタンを中央に配置 */
+    margin: 10px auto; /* ボタンを中央に配置 */
     display: block;
 }
 
@@ -563,7 +570,7 @@ input[type="submit"]:hover {
     font-size: 20px;
     text-align: center;
     text-decoration: none; /* リンクの下線を消す */
-    margin: 10px auto; /* リンクを中央に配置 */
+    margin: 0; /* リンクを中央に配置 */
     display: block;
 }
 
@@ -761,7 +768,7 @@ input[type="submit"]:hover {
 
 .target-achievement h4, .actual-achievement h4 {
     margin-bottom: 50px;
-    margin-left: 80px;
+    margin-left: 120px;
     text-align: left;
 }
 
@@ -790,32 +797,43 @@ input[type="submit"]:hover {
 
 .nav-links {
     display: flex;
-    justify-content: flex-start; /* 子要素を左揃えにする */
-    margin-top:5px;
+    justify-content: flex-start !important; /* 子要素を左揃えにする */
+    gap: 10px; /* リンク間のスペースを調整 */
+    margin: 0; /* マージンをリセット */
+    padding: 0; /* パディングをリセット */
 }
 
 .nav-links .navbar-brand {
     padding: 10px 30px; /* パディングを設定 */
     color: #208b40;
     font-size: 20px;
-    text-align: left;
+    text-align: left !important;
     text-decoration: none; /* リンクの下線を消す */
-    margin-bottom: 0;/* リンクを中央に配置 */
     display: block;
     border-radius: 5px;
-    margin-left: 0;
-    margin-top: 30px;
-    margin-right: 250px;
-    padding-right: 20px;
+    margin-left:0;
+    margin-right: 100px;
+    margin-top:50px;
 }
 
+.nav-links .navbar-b {
+    padding: 10px 10px; /* パディングを設定 */
+    color: #208b40;
+    font-size: 20px;
+    text-align: left !important;
+    text-decoration: none; /* リンクの下線を消す */
+    display: block;
+    border-radius: 5px;
+    margin-left:0;
+    margin-right: 450px;
+    margin-top:50px;
+}
 
 #chart-container {
     width: 80%;
     margin: 10px auto;
-    float: right; 
+    float: right;
 }
-
 .achievement-info {
     display: flex;
     flex-direction: row; /* 水平方向に並べる */
@@ -895,10 +913,12 @@ input[type="submit"]:hover {
     margin-bottom: 0;
     padding: 1px;
     box-sizing: border-box; /* paddingとborderが要素の全体の幅に含まれるようにする */
+    height: 200px; /* 高さを200pxに設定 */
 }
 
 .achievement-container .inner-element {
     padding: 10px; /* 内部要素のパディングを調整 */
+    height: 100%; /* 内部要素が親要素の高さに合わせる */
 }
 
 .target-achievement,
@@ -925,7 +945,7 @@ input[type="submit"]:hover {
 .achievement-text {
     position: absolute;
     top: 55%;
-    left: 70%;
+    left: 69%;
     transform: translate(-50%, -50%);
     color: black; /* テキストの色 */
     font-size: 16px;
@@ -986,6 +1006,6 @@ input[type="submit"]:hover {
 }
 
 #fuelEfficiencyChart {
-    width: 700px !important;  /* 幅を400pxに設定 */
-    height: 400px !important; /* 高さを200pxに設定 */
+    width: 680px !important;  
+    height: 360px !important; 
 }
