@@ -12,17 +12,20 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding-top: 80px; /* ヘッダーの高さに合わせて調整 */
 }
 
 .header-container {
     text-align: center;
     background-color: #6e983e; /* グローバルヘッダーの背景色 */
     padding: 1px 0;
-    margin-top: 80px;
-    position: relative;
+    position:fixed;
+    left: 0; /* 左端に配置 */
+    width: 100%; /* 横幅をページ幅と同じに設定 */
+    margin-top: 0;
     border:1px solid black;
     height:auto;
+    z-index: 1000; /* 他のコンテンツより前面に表示 */
 }
 
 .header-container a.navbar-brand{
@@ -116,7 +119,7 @@ h1 {
 
 .link-container ul {
     list-style: none;
-    margin-top: 40px;
+    margin-top: 90px;
     padding: 10;
 }
 
@@ -367,7 +370,7 @@ input[type="submit"]:hover {
 }
 
 .car-info h3{
-    margin-top: 60px;
+    margin-top: 90px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -412,7 +415,7 @@ input[type="submit"]:hover {
 
 .my_page h3{
     text-align: center;
-    margin-top: 60px;
+    margin-top: 90px;
     margin-bottom: 20px;
     font-weight: normal;
 }
@@ -525,7 +528,7 @@ input[type="submit"]:hover {
 
 .edit form {
     width: 40%; /* フォームを親コンテナの幅に合わせる */
-    margin: 0;
+    margin-top: 30px;
 }
 
 .edit form .form-group {
@@ -583,16 +586,19 @@ input[type="submit"]:hover {
 }
 .records nav {
     display: flex; /* 子要素を横並びにする */
+    flex-direction: column; /* 子要素を縦に並べる */
     align-items: center; /* 子要素を中央に配置 */
     justify-content: space-between; /* 子要素を左詰めに配置 */
-    margin-bottom: 20px; /* 下側マージンを追加 */
+    margin-bottom: 0; /* 下側マージンを追加 */
     width:50%;
 }
 
 /* フォームのスタイル */
 .records form {
     width: 50%; /* フォームを親コンテナの幅に合わせる */
+    margin-top: 50px;
     margin-bottom: 20px;
+    margin-left: -300px; /* 左に10px寄せる（数値は調整可能） */
 }
 
 .records form .form-group {
@@ -642,8 +648,9 @@ input[type="submit"]:hover {
     font-size: 20px;
     text-align: center;
     text-decoration: none; /* リンクの下線を消す */
-    margin-top: 250px;
+    margin-top: -20px; /* 上に10px移動（数値は調整可能） *
     margin-bottom: 5px;
+    margin-left: 200px; /* 右に20px寄せる（数値は調整可能） */
     display: inline-block;
 }
 
@@ -651,7 +658,7 @@ input[type="submit"]:hover {
 .records-container {
     display: flex;
     justify-content: center; /* 子要素を中央に配置 */
-    margin-top: 30px;
+    margin-top:5px;
     margin-bottom: 80px;
 }
 
@@ -682,6 +689,7 @@ input[type="submit"]:hover {
     display: flex;
     flex-wrap: wrap;
     text-align: right;
+    margin-top: 60px;
     margin-left: 350px; 
     margin-right: 20px;
     width:30%;
@@ -694,11 +702,17 @@ input[type="submit"]:hover {
     width: 50%; /* フォームを親コンテナの幅に合わせる */
     margin-bottom: 20px;
     text-align: left;
-    margin-left: 50px;
+    margin-left: 80px;
 }
 
+.target form .unit{
+    margin-left: 10px; /* フォームと単位の間にスペースを追加 */
+    text-align: right;
+}
 .target form .form-group {
     margin-bottom: 15px;
+    display: flex;
+    align-items: center; /* 縦方向の中央揃え */
 }
 
 .target label {
@@ -723,6 +737,8 @@ input[type="submit"]:hover {
     border-radius: 5px;
     box-sizing: border-box;
     margin-bottom: 10px;
+    display: flex; /* フレックスボックスを使用 */
+    align-items: center; /* 縦方向の中央揃え */
 }
 
 .target form button[type="submit"] {
@@ -813,7 +829,7 @@ input[type="submit"]:hover {
     border-radius: 5px;
     margin-left:0;
     margin-right: 100px;
-    margin-top:50px;
+    margin-top:70px;
 }
 
 .nav-links .navbar-b {
@@ -826,7 +842,7 @@ input[type="submit"]:hover {
     border-radius: 5px;
     margin-left:0;
     margin-right: 450px;
-    margin-top:50px;
+    margin-top:70px;
 }
 
 #chart-container {
@@ -846,7 +862,7 @@ input[type="submit"]:hover {
     margin-left: 30px;
     /* パラグラフ要素の左マージンを設定 */
     margin-right: 100px;
-    margin-top: 10px;
+    margin-top: 60px;
 }
 
 /* 新たに追加するスタイル */
@@ -944,7 +960,7 @@ input[type="submit"]:hover {
 }
 .achievement-text {
     position: absolute;
-    top: 55%;
+    top: 37%;
     left: 69%;
     transform: translate(-50%, -50%);
     color: black; /* テキストの色 */

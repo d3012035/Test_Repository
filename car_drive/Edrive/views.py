@@ -368,10 +368,11 @@ class RecordsView(View):
         user = get_object_or_404(User, pk=pk)
         # ユーザーに関連する FuelRecord を取得
         my_cars = MyCar.objects.filter(user=user)
-        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars)
+        mycar_registered = my_cars.exists()
+        fuel_records = FuelRecord.objects.filter(my_car__in=my_cars) if mycar_registered else []
             
         form = self.form_class()
-        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk})
+        return render(request, self.template_name, {'fuel_records': fuel_records, 'form': form, 'car_id': pk, 'mycar_registered': mycar_registered, })
         
     def post(self, request, pk):
         
@@ -389,10 +390,7 @@ class RecordsView(View):
                   distance = form.cleaned_data['distance']
                   fuel_amount = form.cleaned_data['fuel_amount']
                   date = form.cleaned_data['date']
-                  #min_distance = 1.0  # 距離の最小値
-                  #max_distance = 3000.0  # 距離の最大値
-                  #min_fuel_amount = 1.0  # 給油量の最小値
-                  #max_fuel_amount = 200.0  # 給油量の最大値
+                 
 
                   # distance を範囲内に収める
                   #distance = max(min_distance, min(distance, max_distance))
@@ -473,9 +471,12 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         if my_car:
             average_fuel_efficiency = my_car.car_model.average_fuel_efficiency
             form = TargetFuelForm(instance=my_car)
+            mycar_registered = True  # マイカーが登録されている
         else:
             average_fuel_efficiency = None
             form = TargetFuelForm()
+            mycar_registered = False  # マイカーが登録されていない
+
 
         
         context = {
@@ -484,6 +485,7 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             #'user_cars': user_cars,  # ユーザーが登録した車種をコンテキストに追加 
             #'car_models':user_car_models
             'my_car': my_car,
+            'mycar_registered': mycar_registered,  # フラグを追加
         }
         return render(request, self.template_name, context)
 
@@ -493,12 +495,12 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
         
         mycars_instance = MyCar.objects.filter(user=user).first()
         
+        mycar_registered = mycars_instance is not None and mycars_instance.car_model_id is not None
         # 初期化を保証するために空のフォームを準備
         #form = TargetFuelForm(request.POST, instance=mycars_instance) if mycars_instance else TargetFuelForm(request.POST)
         # マイカーが登録されていない場合
-        if not mycars_instance:
+        if not mycar_registered:
             form = TargetFuelForm(request.POST)
-            # エラーメッセージを表示し、マイカー登録ページにリダイレクト
             return redirect(reverse_lazy('Edrive:mycar_detail', kwargs={'pk': user.pk})) # マイカー登録ページにリダイレクト
     
     
@@ -528,7 +530,8 @@ class TargetFuelView(LoginRequiredMixin, UpdateView):
             'form': form,
             'user_cars': user_cars,
             'car_models': user_car_models,  
-            'mycars_instance':mycars_instance
+            'mycars_instance':mycars_instance,
+            'mycar_registered': mycar_registered 
         }
 
         return render(request, self.template_name, context)

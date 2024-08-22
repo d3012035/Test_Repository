@@ -27,8 +27,9 @@
       {% block content %}{% endblock %}
 
   <div class="records">
-  <p>車種が未登録の方は「マイカー画面」で先にマイカーを登録してください</p>
+  
   <nav>
+  {% if mycar_registered %}
    <form method="POST">
    {% csrf_token %}
             <div class="form-group">
@@ -45,13 +46,19 @@
             </div>
    <input type="submit" value="保存">
         </form>
-
+   {% else %}
+    <!-- マイカーが登録されていない場合にリンクを表示 -->
+    <p>マイカーが登録されていません。まずはマイカーを登録してください。</p>
+    <!-- URLのみを表示 -->
+    <p><a href="{% url 'Edrive:mycar_detail' user.pk %}">クリックするとマイカー登録画面に遷移します</a></p>
+    {% endif %}
+        
         {% if date %}
             <h2>Formatted DateTime: {{ created_at }}</h2>
         {% endif %}
     <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
-  </nav>
-  </div>
+    </nav>
+    </div>
 <div class="records-container">
         <div class="car-info">
             <table border='1'>

@@ -36,19 +36,29 @@
         {% endfor %}
     </div>
    {% endif %}
-   <p>車種が未登録の方は「マイカー画面」で先にマイカーを登録してください</p>
+   
    {% if my_car %}
    <h4>{{ my_car.car_model.car_model_name }}の平均燃費量 {{ my_car.car_model.average_fuel_efficiency }} km/L</h4>
    {% endif %}
 
 <label for="target_fuel_efficiency">目標燃費量</label>
    <nav>
+   {% if mycar_registered %}
         <form method="POST">
            {% csrf_token %}
-           {{ form.as_p }}km/L
+         <div class="form-group">
+           {{ form.as_p }}
+           <span class="unit">km/L</span>
+         </div>
    
    <button type="submit">更新</button>
         </form>
+   {% else %}
+    <!-- マイカーが登録されていない場合にリンクを表示 -->
+    <p>マイカーが登録されていません。まずはマイカーを登録してください。</p>
+    <!-- URLのみを表示 -->
+    <p><a href="{% url 'Edrive:mycar_detail' user.pk %}">クリックするとマイカー登録画面に遷移します</a></p>
+    {% endif %}
         
         <a class="navbar-brand" href="{% url 'Edrive:home' %}">戻る</a>
         

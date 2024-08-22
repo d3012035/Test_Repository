@@ -48,11 +48,17 @@
     <div class="achievement-container">
         <div class="target-achievement">
             <h4>目標燃費量</h4>
-    {% for my_car in my_cars %}
+    {% if my_cars %}
+     {% for my_car in my_cars %}
        {% if my_car.target_fuel_efficiency %}
          <div class="value">{{ my_car.target_fuel_efficiency }}km/L</div>
+         {% else %}
+        <div class="value">未設定</div>
          {% endif %}
     {% endfor %}
+    {% else %}
+    <div class="value">未設定</div>
+    {% endif %}
 
     </div>
         <div class="actual-achievement">
@@ -60,7 +66,7 @@
        {% if latest_fuel_record %}
         <div class="value">{{ latest_fuel_record.fuel_efficiency|floatformat:1 }}km/L</div>
        {% else %}
-        <div class="value">None</div>
+        <div class="value">未設定</div>
        {% endif %}
          </div>
    <div class="you">

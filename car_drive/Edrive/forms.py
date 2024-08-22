@@ -3,6 +3,7 @@ from .models import  MyCar, FuelRecord, User, CarModel, Manufacturer
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
+from django.forms import NumberInput
 
 class LoginForm(forms.Form):
     
@@ -59,11 +60,13 @@ class TargetFuelForm(forms.ModelForm):
     
     
 class RecordsForm(forms.ModelForm):
-    distance = forms.FloatField(label = '走行距離(km)', min_value=1.0, max_value=3000.0, error_messages={
+    distance = forms.FloatField(label = '走行距離(km)', min_value=1.0, max_value=3000.0, widget=NumberInput(attrs={'step': 0.1}),
+            error_messages={
         'min_value': '距離は1以上でなければなりません。',
         'max_value': '距離は3000以下でなければなりません。',
         })
-    fuel_amount = forms.FloatField(label = '給油量(L)',min_value=1.0, max_value=200.0, error_messages={
+    fuel_amount = forms.FloatField(label = '給油量(L)',min_value=1.0, max_value=200.0, widget=NumberInput(attrs={'step': 0.1}),
+            error_messages={
         'min_value': '給油量は1以上でなければなりません。',
         'max_value': '給油量は200以下でなければなりません。',
         
