@@ -53,11 +53,11 @@
        {% if my_car.target_fuel_efficiency %}
          <div class="value">{{ my_car.target_fuel_efficiency }}km/L</div>
          {% else %}
-        <div class="value">未設定</div>
+        <div class="value">未登録</div>
          {% endif %}
     {% endfor %}
     {% else %}
-    <div class="value">未設定</div>
+    <div class="value">未登録</div>
     {% endif %}
 
     </div>
@@ -66,7 +66,7 @@
        {% if latest_fuel_record %}
         <div class="value">{{ latest_fuel_record.fuel_efficiency|floatformat:1 }}km/L</div>
        {% else %}
-        <div class="value">未設定</div>
+        <div class="value">未登録</div>
        {% endif %}
          </div>
    <div class="you">
