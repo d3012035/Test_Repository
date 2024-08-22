@@ -590,6 +590,7 @@ input[type="submit"]:hover {
     align-items: center; /* 子要素を中央に配置 */
     justify-content: space-between; /* 子要素を左詰めに配置 */
     margin-bottom: 0; /* 下側マージンを追加 */
+    margin-top: 40px;
     width:50%;
 }
 
@@ -720,6 +721,7 @@ input[type="submit"]:hover {
     margin-bottom: 10px;
     text-align: left;
     display: block;
+    margin-top: 40px;
 }
 
 .target form input[type="text"],
