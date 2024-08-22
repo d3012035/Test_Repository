@@ -14,6 +14,29 @@ body {
     margin: 0;
     padding-top: 80px; /* ヘッダーの高さに合わせて調整 */
 }
+body.port {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding:0; /* ヘッダーの高さに合わせて調整 */
+}
+
+body.start-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding:0; /* ヘッダーの高さに合わせて調整 */
+}
+
+body.login-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding:0; /* ヘッダーの高さに合わせて調整 */
+}
+
+body.regist-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding:0; /* ヘッダーの高さに合わせて調整 */
+}
 
 .header-container {
     text-align: center;
